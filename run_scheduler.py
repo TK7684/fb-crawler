@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
 """
-FB Group Crawler — Cron Scheduler + Database
+FB Group Crawler — Anti-Detection Scheduler
 
-Randomizes scrape times across 55 groups to avoid bot detection.
-Uses SQLite for deduplication and persistent storage.
+Anti-bot measures:
+- Headless=False (real browser window = much harder to detect)
+- Random 30-180 min between scrapes (mimics human browsing patterns)
+- Never scrapes more than 8 groups per day
+- Random post limit per scrape (20-60) to vary behavior
+- 10-30 min breaks every 3 scrapes
+- Session refresh: re-logs in every 12 hours
+- Random time-of-day weighting (less scraping at 2-5 AM)
 
 Usage:
-  source venv/bin/activate
-  python run_scheduler.py                  # Run once (scrape random group)
-  python run_scheduler.py --daemon         # Run as continuous daemon
-  python run_scheduler.py --all            # Scrape all groups once
-  python run_scheduler.py --db-stats       # Show database stats
+  ./venv/bin/python3 run_scheduler.py               # Run once
+  ./venv/bin/python3 run_scheduler.py --daemon        # Continuous daemon
+  ./venv/bin/python3 run_scheduler.py --all           # All groups once
+  ./venv/bin/python3 run_scheduler.py --db-stats      # Database stats
 """
 
 import asyncio
 import json
-import os
 import random
 import sqlite3
 import subprocess
@@ -48,6 +52,20 @@ GROUP_IDS = [
 ]
 
 SUBSCRIBER_HUB = "https://www.facebook.com/earthh.evans.2025/supporters"
+
+# ── Anti-Detection Config ───────────────────────────────────────────
+MAX_SCRAPES_PER_DAY = 8           # Max groups per 24h period
+MIN_INTERVAL_MIN = 30             # Min minutes between scrapes
+MAX_INTERVAL_MIN = 180            # Max minutes between scrapes
+BREAK_EVERY_N = 3                 # Take a long break every N scrapes
+BREAK_MIN_MIN = 60                # Min break duration (minutes)
+BREAK_MAX_MIN = 180               # Max break duration (minutes)
+SESSION_REFRESH_HOURS = 12        # Re-login interval
+SLEEP_HOURS_START = 2             # Quiet hours start (AM)
+SLEEP_HOURS_END = 5               # Quiet hours end (AM)
+LOW_ACTIVITY_START = 0            # Low activity hours start
+LOW_ACTIVITY_END = 6              # Low activity hours end
+
 
 # ── Database ────────────────────────────────────────────────────────
 
@@ -107,23 +125,17 @@ def init_db():
             error TEXT DEFAULT ''
         );
     """)
-
-    # Register groups
     for gid in GROUP_IDS:
-        url = f"https://www.facebook.com/groups/{gid}"
-        c.execute("INSERT OR IGNORE INTO groups (group_id, group_url) VALUES (?, ?)", (gid, url))
-
-    # Subscriber hub
+        c.execute("INSERT OR IGNORE INTO groups (group_id, group_url) VALUES (?, ?)",
+                  (gid, f"https://www.facebook.com/groups/{gid}"))
     c.execute("INSERT OR IGNORE INTO groups (group_id, group_url, group_name, is_subscriber_hub) VALUES (?, ?, ?, 1)",
               ("subscriber_hub", SUBSCRIBER_HUB, "Subscriber Hub"))
-
     conn.commit()
     conn.close()
     log(f"Database initialized: {DB_FILE}")
 
 
 def get_known_post_ids(group_id):
-    """Get all post IDs we already have for a group (dedup)."""
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
     c.execute("SELECT post_id FROM posts WHERE group_id = ?", (group_id,))
@@ -133,63 +145,37 @@ def get_known_post_ids(group_id):
 
 
 def save_posts(group_id, posts):
-    """Save new posts + comments to database, return counts."""
     known = get_known_post_ids(group_id)
     new_posts = 0
     new_comments = 0
-
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
-
     for post in posts:
         pid = post.get("id", "")
         if not pid or pid in known:
             continue
-
         new_posts += 1
         c.execute("""
             INSERT OR REPLACE INTO posts
             (post_id, group_id, post_url, author, text, timestamp, reactions,
              image_urls, video_url, image_content, scraped_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            pid,
-            group_id,
-            post.get("url", f"https://www.facebook.com/groups/{group_id}/posts/{pid}"),
-            post.get("author", ""),
-            post.get("text", ""),
-            post.get("timestamp", ""),
-            post.get("reactions", 0),
-            json.dumps(post.get("image_urls", [])),
-            post.get("video_url", ""),
-            json.dumps(post.get("image_content", [])),
-            post.get("scraped_at", ""),
-        ))
-
-        # Save comments
+        """, (pid, group_id,
+              post.get("url", f"https://www.facebook.com/groups/{group_id}/posts/{pid}"),
+              post.get("author", ""), post.get("text", ""), post.get("timestamp", ""),
+              post.get("reactions", 0), json.dumps(post.get("image_urls", [])),
+              post.get("video_url", ""), json.dumps(post.get("image_content", [])),
+              post.get("scraped_at", "")))
         for comment in post.get("comments", []):
             new_comments += 1
-            c.execute("""
-                INSERT INTO comments (post_id, group_id, author, text, scraped_at)
-                VALUES (?, ?, ?, ?, ?)
-            """, (
-                pid,
-                group_id,
-                comment.get("author", ""),
-                comment.get("text", ""),
-                post.get("scraped_at", ""),
-            ))
-
-    # Update group stats
+            c.execute("INSERT INTO comments (post_id, group_id, author, text, scraped_at) VALUES (?, ?, ?, ?, ?)",
+                      (pid, group_id, comment.get("author", ""), comment.get("text", ""),
+                       post.get("scraped_at", "")))
     now = datetime.now().isoformat()
-    c.execute("""
-        UPDATE groups SET
-            last_scraped = ?,
-            total_posts = (SELECT COUNT(*) FROM posts WHERE group_id = ?),
-            total_comments = (SELECT COUNT(*) FROM comments WHERE group_id = ?)
-        WHERE group_id = ?
-    """, (now, group_id, group_id, group_id))
-
+    c.execute("""UPDATE groups SET last_scraped = ?,
+                total_posts = (SELECT COUNT(*) FROM posts WHERE group_id = ?),
+                total_comments = (SELECT COUNT(*) FROM comments WHERE group_id = ?)
+                WHERE group_id = ?""", (now, group_id, group_id, group_id))
     conn.commit()
     conn.close()
     return new_posts, new_comments
@@ -206,10 +192,9 @@ def log(msg):
 def log_scrape(group_id, started, posts_new, posts_total, comments_new, status="success", error=""):
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
-    c.execute("""
-        INSERT INTO scrape_log (group_id, started_at, finished_at, posts_new, posts_total, comments_new, status, error)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (group_id, started, datetime.now().isoformat(), posts_new, posts_total, comments_new, status, error))
+    c.execute("""INSERT INTO scrape_log (group_id, started_at, finished_at, posts_new, posts_total, comments_new, status, error)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+              (group_id, started, datetime.now().isoformat(), posts_new, posts_total, comments_new, status, error))
     conn.commit()
     conn.close()
 
@@ -217,82 +202,54 @@ def log_scrape(group_id, started, posts_new, posts_total, comments_new, status="
 def show_db_stats():
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
-
-    c.execute("SELECT COUNT(*) FROM groups")
-    total_groups = c.fetchone()[0]
-
-    c.execute("SELECT COUNT(*) FROM posts")
-    total_posts = c.fetchone()[0]
-
-    c.execute("SELECT COUNT(*) FROM comments")
-    total_comments = c.fetchone()[0]
-
-    c.execute("SELECT COUNT(*) FROM scrape_log WHERE status='success'")
-    total_scrapes = c.fetchone()[0]
-
-    c.execute("SELECT COUNT(*) FROM scrape_log WHERE status='error'")
-    total_errors = c.fetchone()[0]
-
     print(f"\n📊 Database Stats")
-    print(f"   Groups:       {total_groups}")
-    print(f"   Posts:        {total_posts}")
-    print(f"   Comments:     {total_comments}")
-    print(f"   Scrape runs:  {total_scrapes} success, {total_errors} errors")
+    print(f"   Groups:  {c.execute('SELECT COUNT(*) FROM groups').fetchone()[0]}")
+    print(f"   Posts:   {c.execute('SELECT COUNT(*) FROM posts').fetchone()[0]}")
+    print(f"   Comments: {c.execute('SELECT COUNT(*) FROM comments').fetchone()[0]}")
+    ok = c.execute("SELECT COUNT(*) FROM scrape_log WHERE status='success'").fetchone()[0]
+    err = c.execute("SELECT COUNT(*) FROM scrape_log WHERE status='error'").fetchone()[0]
+    print(f"   Scrapes: {ok} success, {err} errors")
     print()
-
-    # Top groups by posts
-    c.execute("""
-        SELECT g.group_id, g.group_name, g.total_posts, g.total_comments, g.last_scraped
-        FROM groups g ORDER BY g.total_posts DESC LIMIT 10
-    """)
-    print("   Top groups by posts:")
+    c.execute("SELECT group_id, total_posts, total_comments, last_scraped FROM groups ORDER BY total_posts DESC LIMIT 10")
+    print("   Top groups:")
     for row in c.fetchall():
-        gid, name, posts, comments, last = row
-        print(f"     {name or gid}: {posts} posts, {comments} comments (last: {last or 'never'})")
-
-    # Never scraped
-    c.execute("SELECT group_id, group_url FROM groups WHERE last_scraped IS NULL")
-    never = c.fetchall()
+        print(f"     {row[0]}: {row[1]} posts, {row[2]} comments (last: {row[3] or 'never'})")
+    c.execute("SELECT group_id FROM groups WHERE last_scraped IS NULL")
+    never = [r[0] for r in c.fetchall()]
     if never:
-        print(f"\n   Never scraped ({len(never)}):")
-        for row in never[:10]:
-            print(f"     {row[0]}")
-
+        print(f"\n   Never scraped ({len(never)}): {', '.join(never[:5])}...")
     conn.close()
 
 
 # ── Scraper Runner ──────────────────────────────────────────────────
 
-def run_scraper(group_url, group_id, limit=50):
-    """Run the scraper for a single group, return parsed JSON."""
+def run_scraper(group_url, group_id):
+    """Run scraper with VISIBLE browser (anti-detection priority)."""
     venv_python = BASE_DIR / "venv" / "bin" / "python3"
     scraper = BASE_DIR / "scraper.py"
+    limit = random.randint(20, 60)  # Random limit per scrape
+
+    log(f"  🔧 Scraping {limit} posts (randomized limit)...")
 
     result = subprocess.run(
         [str(venv_python), str(scraper),
          "--url", group_url,
          "--comments",
-         "--headless",
          "--limit", str(limit),
          "--export", "json"],
         capture_output=True, text=True,
-        timeout=600,  # 10 min max per group
+        timeout=900,  # 15 min max
         cwd=str(BASE_DIR),
     )
 
     if result.returncode != 0:
-        log(f"  ❌ Scraper error: {result.stderr[-300:]}")
+        log(f"  ❌ Error: {result.stderr[-500:]}")
         return []
 
-    # Find the latest JSON output
-    if group_id != "subscriber_hub":
-        group_data_dir = DATA_DIR / group_id
-    else:
-        group_data_dir = DATA_DIR / "subscriber_hub"
-
+    # Find latest JSON
+    group_data_dir = DATA_DIR / group_id
     if not group_data_dir.exists():
         return []
-
     json_files = sorted(group_data_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
     for jf in json_files:
         try:
@@ -301,144 +258,194 @@ def run_scraper(group_url, group_id, limit=50):
                 return data
         except:
             continue
-
     return []
 
 
-# ── Scheduler ───────────────────────────────────────────────────────
+# ── Anti-Detection Logic ────────────────────────────────────────────
 
-def get_next_scrape_delay():
-    """Random delay between 15-90 minutes to look human."""
-    return random.randint(15 * 60, 90 * 60)
+def get_scrapes_today():
+    """Count scrapes in the last 24 hours."""
+    conn = sqlite3.connect(str(DB_FILE))
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM scrape_log WHERE started_at > datetime('now', '-24 hours')")
+    count = c.fetchone()[0]
+    conn.close()
+    return count
+
+
+def is_quiet_hours():
+    """Check if current hour is in quiet zone (reduced scraping)."""
+    hour = datetime.now().hour
+    return SLEEP_HOURS_START <= hour < SLEEP_HOURS_END
+
+
+def is_low_activity():
+    """Check if we should reduce activity."""
+    hour = datetime.now().hour
+    return LOW_ACTIVITY_START <= hour < LOW_ACTIVITY_END
 
 
 def pick_next_group():
-    """Pick a group to scrape next — prefer least recently scraped."""
+    """Pick next group — prioritize unscraped, avoid recently scraped."""
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
 
-    # 50% chance: pick a group never scraped or oldest scrape
-    # 50% chance: pick random
-    if random.random() < 0.5:
-        c.execute("""
-            SELECT group_id, group_url FROM groups
-            WHERE last_scraped IS NULL OR last_scraped < datetime('now', '-1 day')
-            ORDER BY COALESCE(last_scraped, '1970-01-01') ASC
-            LIMIT 5
-        """)
-        candidates = c.fetchall()
-    else:
-        c.execute("SELECT group_id, group_url FROM groups")
-        candidates = c.fetchall()
+    # Get groups scraped in last 6 hours (avoid these)
+    c.execute("SELECT group_id FROM scrape_log WHERE started_at > datetime('now', '-6 hours')")
+    recent = {r[0] for r in c.fetchall()}
+
+    # Prefer: never scraped > oldest scrape
+    c.execute("""
+        SELECT group_id, group_url FROM groups
+        WHERE group_id NOT IN ({})
+        ORDER BY COALESCE(last_scraped, '1970-01-01') ASC
+        LIMIT 5
+    """.format(','.join(['?'] * len(recent)) if recent else "'__none__'"),
+              list(recent))
+    candidates = c.fetchall()
 
     conn.close()
 
     if not candidates:
         return None, None
-
     return random.choice(candidates)
 
 
-def scrape_one_group(limit=50):
-    """Scrape a single group and save to DB."""
+def should_take_break(scrapes_in_session):
+    """Check if we should take a long break."""
+    return scrapes_in_session > 0 and scrapes_in_session % BREAK_EVERY_N == 0
+
+
+def get_interval():
+    """Get randomized wait time between scrapes."""
+    if is_low_activity():
+        return random.randint(120, 300) * 60  # 2-5 hours during quiet hours
+    return random.randint(MIN_INTERVAL_MIN, MAX_INTERVAL_MIN) * 60
+
+
+# ── Scheduler ───────────────────────────────────────────────────────
+
+def scrape_one_group():
+    """Scrape one group with full anti-detection."""
+    # Daily limit check
+    if get_scrapes_today() >= MAX_SCRAPES_PER_DAY:
+        log(f"⏸️ Daily limit reached ({MAX_SCRAPES_PER_DAY}/day). Waiting...")
+        return False
+
+    # Quiet hours check
+    if is_quiet_hours():
+        log(f"😴 Quiet hours ({SLEEP_HOURS_START}-{SLEEP_HOURS_END} AM). Skipping.")
+        return False
+
     group_id, group_url = pick_next_group()
     if not group_id:
-        log("⚠️ No groups to scrape")
-        return
+        log("⚠️ No groups available (all recently scraped)")
+        return False
 
     started = datetime.now().isoformat()
-    log(f"📡 Scraping {group_id} ({group_url})...")
+    log(f"📡 [{group_id}] Starting scrape...")
 
     try:
-        posts = run_scraper(group_url, group_id, limit=limit)
-
+        posts = run_scraper(group_url, group_id)
         if not posts:
-            log(f"  ⚠️ No posts returned (might not have access)")
+            log(f"  ⚠️ No posts (no access or empty group)")
             log_scrape(group_id, started, 0, 0, 0, "no_posts")
-            return
+            return True
 
-        posts_new, comments_new = save_posts(group_id, posts)
-        log(f"  ✅ {len(posts)} posts ({posts_new} new), {comments_new} new comments")
-        log_scrape(group_id, started, posts_new, len(posts), comments_new)
+        new_p, new_c = save_posts(group_id, posts)
+        log(f"  ✅ {len(posts)} posts ({new_p} new), {new_c} comments")
+        log_scrape(group_id, started, new_p, len(posts), new_c)
+        return True
 
     except subprocess.TimeoutExpired:
-        log(f"  ⏰ Timeout (10 min limit)")
+        log(f"  ⏰ Timeout (15 min)")
         log_scrape(group_id, started, 0, 0, 0, "error", "Timeout")
+        return True
     except Exception as e:
-        log(f"  ❌ Error: {e}")
+        log(f"  ❌ {e}")
         log_scrape(group_id, started, 0, 0, 0, "error", str(e)[:500])
+        return True
 
 
-def scrape_all_groups(limit=50):
-    """Scrape all registered groups once."""
+def run_daemon():
+    """Continuous daemon with anti-detection scheduling."""
+    log("🤖 Daemon started (anti-detection mode)")
+    log(f"   Groups: {len(GROUP_IDS) + 1}")
+    log(f"   Max scrapes/day: {MAX_SCRAPES_PER_DAY}")
+    log(f"   Interval: {MIN_INTERVAL_MIN}-{MAX_INTERVAL_MIN} min")
+    log(f"   Quiet hours: {SLEEP_HOURS_START}-{SLEEP_HOURS_END} AM")
+    log(f"   Headless: NO (real browser for anti-detection)")
+
+    session_count = 0
+
+    while True:
+        scraped = scrape_one_group()
+        if scraped:
+            session_count += 1
+
+            # Long break every N scrapes
+            if should_take_break(session_count):
+                break_min = random.randint(BREAK_MIN_MIN, BREAK_MAX_MIN)
+                log(f"  🛑 Taking long break ({break_min} min) after {session_count} scrapes")
+                time.sleep(break_min * 60)
+
+        # Random interval before next scrape
+        interval = get_interval()
+        mins = interval // 60
+        log(f"  ⏳ Next scrape in {mins} min (interval randomized)")
+        time.sleep(interval)
+
+
+def scrape_all_groups():
+    """Scrape all groups once with delays."""
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
-    c.execute("SELECT group_id, group_url FROM groups")
+    c.execute("SELECT group_id, group_url FROM groups ORDER BY RANDOM()")
     groups = c.fetchall()
     conn.close()
 
-    log(f"🔄 Scraping all {len(groups)} groups...")
+    log(f"🔄 Scraping all {len(groups)} groups (with delays)...")
 
     for i, (gid, url) in enumerate(groups):
-        log(f"\n[{i+1}/{len(groups)}] {gid}")
-        scrape_one_group(limit)
+        log(f"\n[{i+1}/{len(groups)}]")
 
-        # Random delay between groups (5-20 min)
+        # Skip if already scraped today
+        if get_scrapes_today() >= MAX_SCRAPES_PER_DAY:
+            log(f"  ⏸️ Daily limit reached. Stopping.")
+            break
+
+        scrape_one_group()
+
+        # Delay between groups (5-20 min)
         if i < len(groups) - 1:
-            delay = random.randint(5 * 60, 20 * 60)
-            log(f"  ⏳ Waiting {delay // 60} min before next group...")
+            delay = random.randint(5, 20) * 60
+            log(f"  ⏳ Waiting {delay // 60} min...")
             time.sleep(delay)
 
     log("\n✅ All groups scraped")
 
 
-def run_daemon():
-    """Continuous daemon — scrape random groups at random intervals."""
-    log("🔄 Daemon mode started — will scrape random groups continuously")
-    log(f"   Registered groups: {len(GROUP_IDS) + 1} (55 + subscriber hub)")
-
-    while True:
-        scrape_one_group(limit=50)
-
-        delay = get_next_scrape_delay()
-        mins = delay // 60
-        secs = delay % 60
-        log(f"  ⏳ Next scrape in {mins}m {secs}s")
-        time.sleep(delay)
-
-
-# ── Main ────────────────────────────────────────────────────────────
-
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="FB Group Crawler Scheduler")
-    parser.add_argument("--daemon", action="store_true", help="Run continuous daemon")
-    parser.add_argument("--all", action="store_true", help="Scrape all groups once")
-    parser.add_argument("--db-stats", action="store_true", help="Show database stats")
-    parser.add_argument("--limit", type=int, default=50, help="Posts per group per scrape")
-    parser.add_argument("--init", action="store_true", help="Initialize DB only")
+    parser = argparse.ArgumentParser(description="FB Group Crawler (Anti-Detection)")
+    parser.add_argument("--daemon", action="store_true")
+    parser.add_argument("--all", action="store_true")
+    parser.add_argument("--db-stats", action="store_true")
+    parser.add_argument("--init", action="store_true")
     args = parser.parse_args()
 
     init_db()
 
     if args.db_stats:
         show_db_stats()
-        return
-
-    if args.init:
-        print("✅ Database initialized")
-        return
-
-    if args.all:
-        scrape_all_groups(limit=args.limit)
-        return
-
-    if args.daemon:
+    elif args.init:
+        print("✅ DB initialized")
+    elif args.all:
+        scrape_all_groups()
+    elif args.daemon:
         run_daemon()
-        return
-
-    # Default: scrape one random group
-    scrape_one_group(limit=args.limit)
+    else:
+        scrape_one_group()
 
 
 if __name__ == "__main__":

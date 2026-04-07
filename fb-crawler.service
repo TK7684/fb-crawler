@@ -1,5 +1,5 @@
 [Unit]
-Description=FB Group Crawler Daemon
+Description=FB Group Crawler Daemon (Anti-Detection)
 After=network-online.target
 
 [Service]
@@ -8,7 +8,7 @@ User=tk578
 WorkingDirectory=/home/tk578/.openclaw/workspace/fb-group-scraper
 ExecStart=/home/tk578/.openclaw/workspace/fb-group-scraper/venv/bin/python3 /home/tk578/.openclaw/workspace/fb-group-scraper/run_scheduler.py --daemon
 Restart=always
-RestartSec=60
+RestartSec=120
 Environment=DISPLAY=:0
 
 [Install]

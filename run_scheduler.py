@@ -235,6 +235,7 @@ def run_scraper(group_url, group_id):
         [str(venv_python), str(scraper),
          "--url", group_url,
          "--comments",
+         "--headless",
          "--limit", str(limit),
          "--export", "json"],
         capture_output=True, text=True,
@@ -295,16 +296,20 @@ def pick_next_group():
     recent = {r[0] for r in c.fetchall()}
 
     # Prefer: never scraped > oldest scrape
-    c.execute("""
-        SELECT group_id, group_url FROM groups
-        WHERE group_id NOT IN ({})
-        ORDER BY COALESCE(last_scraped, '1970-01-01') ASC
-        LIMIT 5
-    """.format(','.join(['?'] * len(recent)) if recent else "'__none__'"),
-              list(recent))
+    if recent:
+        c.execute("""
+            SELECT group_id, group_url FROM groups
+            WHERE group_id NOT IN ({})
+            ORDER BY COALESCE(last_scraped, '1970-01-01') ASC
+            LIMIT 5
+        """.format(','.join(['?'] * len(recent))), list(recent))
+    else:
+        c.execute("""
+            SELECT group_id, group_url FROM groups
+            ORDER BY COALESCE(last_scraped, '1970-01-01') ASC
+            LIMIT 5
+        """)
     candidates = c.fetchall()
-
-    conn.close()
 
     if not candidates:
         return None, None

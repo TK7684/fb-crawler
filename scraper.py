@@ -26,12 +26,88 @@ DATA_DIR = Path(__file__).parent / "data"
 SESSION_FILE = Path(__file__).parent / "session.json"
 
 STEALTH_JS = """
+// Core: hide webdriver
 Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+
+// Plugins
 Object.defineProperty(navigator, 'plugins', {
     get: () => [1, 2, 3, 4, 5].map(() => ({ name: 'Chrome PDF Plugin' }))
 });
-Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-window.chrome = { runtime: {} };
+
+// Languages
+Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en', 'th'] });
+
+// Chrome runtime
+window.chrome = { runtime: {}, loadTimes: function(){}, csi: function(){} };
+
+// Permissions
+const oq = window.navigator.permissions.query;
+window.navigator.permissions.query = (p) =>
+    p.name === 'notifications'
+        ? Promise.resolve({ state: Notification.permission })
+        : oq(p);
+
+// WebGL
+const gp = WebGLRenderingContext.prototype.getParameter;
+WebGLRenderingContext.prototype.getParameter = function(param) {
+    if (param === 37445) return 'Google Inc. (NVIDIA)';
+    if (param === 37446) return 'ANGLE (NVIDIA, NVIDIA GeForce RTX 5060 Ti, OpenGL 4.6)';
+    return gp.call(this, param);
+};
+const gp2 = WebGL2RenderingContext.prototype.getParameter;
+WebGL2RenderingContext.prototype.getParameter = function(param) {
+    if (param === 37445) return 'Google Inc. (NVIDIA)';
+    if (param === 37446) return 'ANGLE (NVIDIA, NVIDIA GeForce RTX 5060 Ti, OpenGL 4.6)';
+    return gp2.call(this, param);
+};
+
+// Hardware concurrency (real CPU)
+Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+
+// Platform
+Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
+
+// Vendor
+Object.defineProperty(navigator, 'vendor', { get: () => 'Google Inc.' });
+
+// Connection (realistic)
+Object.defineProperty(navigator, 'connection', {
+    get: () => ({ effectiveType: '4g', rtt: 50, downlink: 10, saveData: false })
+});
+
+// Media codecs
+Object.defineProperty(navigator, 'mediaCapabilities', {
+    get: () => ({
+        decodingInfo: () => Promise.resolve({ supported: true, powerEfficient: true, smooth: true })
+    })
+});
+
+// Hide automation flags
+delete navigator.__proto__.webdriver;
+
+// Canvas fingerprint noise
+const origToDataURL = HTMLCanvasElement.prototype.toDataURL;
+HTMLCanvasElement.prototype.toDataURL = function(type) {
+    if (type === 'image/png') {
+        const ctx = this.getContext('2d');
+        if (ctx) {
+            const imageData = ctx.getImageData(0, 0, this.width, this.height);
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                imageData.data[i] ^= 1; // Tiny noise
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+    }
+    return origToDataURL.apply(this, arguments);
+};
+
+// Iframe contentWindow
+const origContentWindow = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'contentWindow');
+if (origContentWindow) {
+    Object.defineProperty(HTMLIFrameElement.prototype, 'contentWindow', {
+        get: function() { return null; }
+    });
+}
 """
 
 
@@ -43,6 +119,10 @@ async def human_scroll(page):
     d = random.randint(300, 800)
     await page.evaluate(f"window.scrollBy(0, {d})")
     await random_delay(0.3, 0.8)
+    # Random mouse movement
+    x, y = random.randint(100, 800), random.randint(100, 600)
+    await page.mouse.move(x, y, steps=random.randint(3, 10))
+    await random_delay(0.1, 0.3)
 
 
 async def safe_text(el):
@@ -96,16 +176,41 @@ def is_noise(text):
 
 async def create_browser(headless=False):
     pw = await async_playwright().start()
+    args = [
+        "--disable-blink-features=AutomationControlled",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-infobars",
+        "--disable-extensions",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-background-timer-throttling",
+        "--disable-backgrounding-occluded-windows",
+        "--disable-renderer-backgrounding",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--disable-component-extensions-with-background-pages",
+    ]
+    if headless:
+        # Use Playwright headless (not --headless=new which can cause issues)
+        pass  # handled below
+
     browser = await pw.chromium.launch(
         headless=headless,
-        args=["--disable-blink-features=AutomationControlled", "--no-sandbox", "--disable-dev-shm-usage"],
+        args=args,
     )
     ctx = await browser.new_context(
         viewport={"width": 1280, "height": 800},
         user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
-        locale="en-US", timezone_id="Asia/Bangkok",
-        extra_http_headers={"Accept-Language": "en-US,en;q=0.9"},
+        locale="en-US",
+        timezone_id="Asia/Bangkok",
+        extra_http_headers={
+            "Accept-Language": "en-US,en;q=0.9,th;q=0.8",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
         accept_downloads=True,
+        bypass_csp=True,
+        java_script_enabled=True,
     )
     if SESSION_FILE.exists():
         await ctx.add_cookies(json.loads(SESSION_FILE.read_text()))

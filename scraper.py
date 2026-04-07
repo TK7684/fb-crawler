@@ -99,10 +99,10 @@ def is_noise(text):
 
 # ── Browser ─────────────────────────────────────────────────────────
 
-async def create_browser():
+async def create_browser(headless=False):
     pw = await async_playwright().start()
     browser = await pw.chromium.launch(
-        headless=False,
+        headless=headless,
         args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
     )
     ctx = await browser.new_context(
@@ -478,6 +478,7 @@ async def main():
     import argparse
     parser = argparse.ArgumentParser(description="FB Group Scraper v4")
     parser.add_argument("--login", action="store_true")
+    parser.add_argument("--headless", action="store_true", help="Run browser headless (no window)")
     parser.add_argument("--url", type=str)
     parser.add_argument("--limit", type=int, default=50)
     parser.add_argument("--comments", action="store_true")
@@ -485,7 +486,7 @@ async def main():
     parser.add_argument("--export", choices=["json", "markdown", "both"], default="both")
     args = parser.parse_args()
 
-    pw, browser, ctx, page = await create_browser()
+    pw, browser, ctx, page = await create_browser(headless=args.headless)
 
     try:
         if args.login:

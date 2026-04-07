@@ -5,3 +5,5 @@ data/
 session.json
 *.png
 *.html
+fb_groups.db
+scheduler.log

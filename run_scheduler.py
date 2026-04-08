@@ -107,6 +107,8 @@ def init_db():
             group_id TEXT NOT NULL,
             author TEXT DEFAULT '',
             text TEXT DEFAULT '',
+            timestamp TEXT DEFAULT '',
+            timestamp_raw TEXT DEFAULT '',
             scraped_at TEXT,
             FOREIGN KEY (post_id) REFERENCES posts(post_id)
         );
@@ -168,8 +170,9 @@ def save_posts(group_id, posts):
               post.get("scraped_at", "")))
         for comment in post.get("comments", []):
             new_comments += 1
-            c.execute("INSERT INTO comments (post_id, group_id, author, text, scraped_at) VALUES (?, ?, ?, ?, ?)",
+            c.execute("INSERT INTO comments (post_id, group_id, author, text, timestamp, timestamp_raw, scraped_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
                       (pid, group_id, comment.get("author", ""), comment.get("text", ""),
+                       comment.get("timestamp", ""), comment.get("timestamp_raw", ""),
                        post.get("scraped_at", "")))
     now = datetime.now().isoformat()
     c.execute("""UPDATE groups SET last_scraped = ?,
@@ -234,7 +237,7 @@ def run_scraper(group_url, group_id):
     result = subprocess.run(
         [str(venv_python), str(scraper),
          "--url", group_url,
-         "--comments",
+         "--comments", "--images",
          "--headless",
          "--limit", str(limit),
          "--export", "json"],

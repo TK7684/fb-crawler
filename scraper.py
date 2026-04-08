@@ -238,6 +238,44 @@ def analyze_single_image(url, cookies=None):
     return "[image: no text detected]"
 
 
+
+async def browser_download_image(page, url, timeout=10000):
+    """Download image via Playwright browser context (authenticated)."""
+    try:
+        resp = await page.request.get(url, timeout=timeout)
+        if resp.status == 200:
+            data = await resp.body()
+            if len(data) < 1000:
+                return None
+            ext = "jpg"
+            ct = resp.headers.get("content-type", "")
+            if "png" in ct: ext = "png"
+            elif "webp" in ct: ext = "webp"
+            import tempfile
+            f = tempfile.NamedTemporaryFile(suffix=f".{ext}", delete=False)
+            f.write(data)
+            f.close()
+            return f.name
+    except:
+        pass
+    return None
+
+
+async def analyze_image_via_browser(page, url):
+    """Download image via browser context + OCR."""
+    path = await browser_download_image(page, url)
+    if not path:
+        return analyze_single_image(url)
+    ocr = ocr_image(path)
+    try:
+        Path(path).unlink()
+    except:
+        pass
+    if ocr:
+        return f"OCR: {ocr[:300]}"
+    return "[image: no text detected]"
+
+
 # ── Browser ─────────────────────────────────────────────────────────
 
 async def create_browser(headless=False):
@@ -575,7 +613,7 @@ async def phase2_deep(page, posts, max_deep=30, cookies=None):
             try:
                 print(f"    🔍 OCR analyzing {min(len(post['image_urls']), 3)} images...")
                 for img_url in post["image_urls"][:3]:
-                    result = analyze_single_image(img_url, cookies=cookies)
+                    result = await analyze_image_via_browser(page, img_url)
                     if result:
                         post["image_content"].append(result)
             except Exception as e:

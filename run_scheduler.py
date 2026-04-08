@@ -54,12 +54,12 @@ GROUP_IDS = [
 SUBSCRIBER_HUB = "https://www.facebook.com/earthh.evans.2025/supporters"
 
 # ── Anti-Detection Config ───────────────────────────────────────────
-MAX_SCRAPES_PER_DAY = 8           # Max groups per 24h period
-MIN_INTERVAL_MIN = 30             # Min minutes between scrapes
-MAX_INTERVAL_MIN = 180            # Max minutes between scrapes
+MAX_SCRAPES_PER_DAY = 24           # Max groups per 24h period
+MIN_INTERVAL_MIN = 15             # Min minutes between scrapes
+MAX_INTERVAL_MIN = 90            # Max minutes between scrapes
 BREAK_EVERY_N = 3                 # Take a long break every N scrapes
-BREAK_MIN_MIN = 60                # Min break duration (minutes)
-BREAK_MAX_MIN = 180               # Max break duration (minutes)
+BREAK_MIN_MIN = 20                # Min break duration (minutes)
+BREAK_MAX_MIN = 60               # Max break duration (minutes)
 SESSION_REFRESH_HOURS = 12        # Re-login interval
 SLEEP_HOURS_START = 2             # Quiet hours start (AM)
 SLEEP_HOURS_END = 5               # Quiet hours end (AM)
@@ -230,7 +230,7 @@ def run_scraper(group_url, group_id):
     """Run scraper with VISIBLE browser (anti-detection priority)."""
     venv_python = BASE_DIR / "venv" / "bin" / "python3"
     scraper = BASE_DIR / "scraper.py"
-    limit = random.randint(20, 60)  # Random limit per scrape
+    limit = random.randint(40, 100)  # Random limit per scrape
 
     log(f"  🔧 Scraping {limit} posts (randomized limit)...")
 
@@ -238,7 +238,7 @@ def run_scraper(group_url, group_id):
         [str(venv_python), str(scraper),
          "--url", group_url,
          "--headless",
-         "--limit", str(limit),
+         "--limit", str(limit), "--deep", str(min(limit, 50)),
          "--export", "json"],
         capture_output=True, text=True,
         timeout=900,  # 15 min max

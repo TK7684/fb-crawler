@@ -237,7 +237,6 @@ def run_scraper(group_url, group_id):
     result = subprocess.run(
         [str(venv_python), str(scraper),
          "--url", group_url,
-         "--comments", "--images",
          "--headless",
          "--limit", str(limit),
          "--export", "json"],

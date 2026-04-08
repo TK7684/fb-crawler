@@ -1,0 +1,696 @@
+[
+  {
+    "id": "1629385741722071",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1629385741722071/",
+    "author": "Abdullah HA",
+    "text": "thank you its very helpful i needed such report. may you update it with glm 5.1 and new glm variants",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/667383593_878698431857911_7607238611137347862_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/669045640_955028993917705_4176706622551090323_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-1.xx.fbcdn.net/v/t15.5256-10/660755177_1713890726655068_7504817191778495837_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-3.xx.fbcdn.net/v/t15.5256-10/668587849_1958880814738469_5836523693230823897_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/667383593_878698431857911_76]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1630067294987249",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1630067294987249/",
+    "author": "Giannis Giftakis",
+    "text": "Is there a tool to refine RAG after the knowledge base is changing?",
+    "timestamp": "13h",
+    "timestamp_raw": "13h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/669406813_1402103198355014_7214047812475356906_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666829147_1988974938354230_6021639031100461896_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-1.xx.fbcdn.net/v/t39.30808-6/667830573_1593219932810255_2192474936790607066_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/667404301_1897627257526947_7257063960305216541_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668226051_1293340809645399_7171843550619524418_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/669406813_1402103198355014_72]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666829147_1988974938354230_60]"
+    ],
+    "comments": [
+      {
+        "author": "https://github.com/jgravelle/jcodemunch-mcp",
+        "text": "Victor Chigne J Gravelle has one too GITHUB.COM GitHub - jgravelle/jcodemunch-mcp: The leading, most token-efficient MCP server for GitHub source code exploration via tree-sitter AST parsing GitHub - jgravelle/jcodemunch-mcp: The leading, most token-efficient MCP server for GitHub source code exploration via tree-sitter AST parsing",
+        "timestamp": "12h",
+        "timestamp_raw": "12h"
+      },
+      {
+        "author": "https://github.com/jgravelle/jcodemunch-mcp",
+        "text": "Victor ChigneJ Gravelle has one toohttps://github.com/jgravelle/jcodemunch-mcpGITHUB.COMGitHub - jgravelle/jcodemunch-mcp: The leading, most token-efficient MCP server for GitHub source code exploration via tree-sitter AST parsingGitHub - jgravelle/jcodemunch-mcp: The leading, most token-efficient MCP server for GitHub source code exploration via tree-sitter AST parsing12hLikeReplyShare1",
+        "timestamp": "",
+        "timestamp_raw": ""
+      }
+    ]
+  },
+  {
+    "id": "1628292558498056",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628292558498056/",
+    "author": "Zion Hsu",
+    "text": "Hello guys just starting in dev, I hope you doing good, what would be an efficient ratio token/second ? To run a model in betw… See more",
+    "timestamp": "10h",
+    "timestamp_raw": "10h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668128443_792370967280781_6958088704996968415_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t39.30808-6/668542629_1463054678865336_3285261545759714260_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666829147_1988974938354230_6021639031100461896_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_18]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1629873538339958",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1629873538339958/",
+    "author": "Bill Radtke",
+    "text": "this is what tests are for",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/669690919_122330727296207079_4449675247610322974_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668128443_792370967280781_6958088704996968415_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t39.30808-6/668542629_1463054678865336_3285261545759714260_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1629750735018905",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1629750735018905/",
+    "author": "Bill Radtke",
+    "text": "always check its outputs. it leans towards creativity vs accuracy by design",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/668392789_2813846518992224_8034715095114412960_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t39.30808-6/663287355_1377602967743016_2109990783336824706_n.webp?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/666008299_983253037560189_8405392941267824801_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t15.5256-10/668982324_962102543144228_8189336126029711661_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/668392789_2813846518992224_80]",
+      "[download failed: https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1628941045099874",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628941045099874/",
+    "author": "El Gibs Sports Center",
+    "text": "If your AI isnt still hardened to prevent context poisoning or injection these days then I have bad news for you.",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/667250590_1475857973999635_6789788559568253761_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668226051_1293340809645399_7171843550619524418_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/667250590_1475857973999635_67]",
+      "[download failed: https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668226051_1293340809645399_7]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1626338595360119",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1626338595360119/",
+    "author": "Thanh Hoang",
+    "text": "Author\nAdmin\nAll-star contributor\ngithub: Arindam200/cc-lens",
+    "timestamp": "github: arindam200/cc-lens",
+    "timestamp_raw": "github: Arindam200/cc-lens",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/667250590_1475857973999635_6789788559568253761_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668226051_1293340809645399_7171843550619524418_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/667250590_1475857973999635_67]",
+      "[download failed: https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668226051_1293340809645399_7]"
+    ],
+    "comments": [
+      {
+        "author": "NumberoneSon.US",
+        "text": "Roger Grubb Yup, thought the same thing. So I built a claude ai gas gauge so i can see exactly where I'm at anytime mid-project, without having to drill down to the usage page. Link is the very first one here: NumberoneSon.US NUMBERONESON.US Number One Son Software Development Number One Son Software Development",
+        "timestamp": "5d",
+        "timestamp_raw": "5d"
+      },
+      {
+        "author": "NumberoneSon.US",
+        "text": "Roger GrubbYup, thought the same thing. So I built a claude ai gas gauge so i can see exactly where I'm at anytime mid-project, without having to drill down to the usage page. Link is the very first one here:  NumberoneSon.USNUMBERONESON.USNumber One Son Software DevelopmentNumber One Son Software Development5dLikeReplyShare",
+        "timestamp": "",
+        "timestamp_raw": ""
+      }
+    ]
+  },
+  {
+    "id": "1628856098441702",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628856098441702/",
+    "author": "Mathew Ng",
+    "text": "So all we need is a blind 3B text model to read images",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657353639_18568943812005476_3107531143054625936_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668966307_1553361886793607_4190753463638186413_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657353639_18568943812005476_]",
+      "[download failed: https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668966307_1553361886793607_41]"
+    ],
+    "comments": [
+      {
+        "author": "https://arxiv.org/abs/2603.21687",
+        "text": "20playtesters paper: https://arxiv.org/abs/2603.21687 ARXIV.ORG MIRAGE: The Illusion of Visual Understanding MIRAGE: The Illusion of Visual Understanding",
+        "timestamp": "2d",
+        "timestamp_raw": "2d"
+      },
+      {
+        "author": "https://arxiv.org/abs/2603.21687",
+        "text": "20playtesterspaper: https://arxiv.org/abs/2603.21687ARXIV.ORGMIRAGE: The Illusion of Visual UnderstandingMIRAGE: The Illusion of Visual Understanding2dLikeReplyShare",
+        "timestamp": "",
+        "timestamp_raw": ""
+      }
+    ]
+  },
+  {
+    "id": "1629515098375802",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1629515098375802/",
+    "author": "Nguyen Stan Ting",
+    "text": "Well done bro. That’s awesome work.",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-6/667488186_122177365778634677_7075373913059609511_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t15.5256-10/668478027_1744599692963342_7337442745771953921_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t15.5256-10/666849390_980117291017837_238970875010672982_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/668658319_2514953298938049_3330639177639273819_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t15.5256-10/667938263_35243272271953207_49724632808685862_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-6/667488186_122177365778634677_]",
+      "[download failed: https://scontent-sin11-1.xx.fbcdn.net/v/t15.5256-10/668478027_1744599692963342_7]"
+    ],
+    "comments": [
+      {
+        "author": "https://github.com/TheRealSeanDonahoe/occam",
+        "text": "Sean Donahoe GitHub Repo (Go test it yourself, I made it MIT license) GITHUB.COM GitHub - TheRealSeanDonahoe/occam: Occam — Algorithmic ARC-AGI-3 solver. 57.60% RHAE, 17/25 games, no LLM, $0 cost. GitHub - TheRealSeanDonahoe/occam: Occam — Algorithmic ARC-AGI-3 solver. 57.60% RHAE, 17/25 games, no LLM, $0 cost.",
+        "timestamp": "1d",
+        "timestamp_raw": "1d"
+      },
+      {
+        "author": "https://zenodo.org/records/19448189",
+        "text": "Sean Donahoe Technical Paper on CERN's Publishing Site: ZENODO.ORG Occam's Solver: An Algorithmic Baseline for ARC-AGI-3 Without Learned Models Occam's Solver: An Algorithmic Baseline for ARC-AGI-3 Without Learned Models",
+        "timestamp": "1d",
+        "timestamp_raw": "1d"
+      },
+      {
+        "author": "https://youtu.be/e-Dt9zR1kPk",
+        "text": "Sean Donahoe YouTube Demo: https://youtu.be/e-Dt9zR1kPk YOUTUBE.COM Occam's Solver — 57.60% RHAE on ARC-AGI-3 (Full Benchmark Run, No LLM) Occam's Solver — 57.60% RHAE on ARC-AGI-3 (Full Benchmark Run, No LLM)",
+        "timestamp": "1d",
+        "timestamp_raw": "1d"
+      },
+      {
+        "author": "https://github.com/TheRealSeanDonahoe/occam",
+        "text": "Sean DonahoeGitHub Repo (Go test it yourself, I made it MIT license)https://github.com/TheRealSeanDonahoe/occamGITHUB.COMGitHub - TheRealSeanDonahoe/occam: Occam — Algorithmic ARC-AGI-3 solver. 57.60% RHAE, 17/25 games, no LLM, $0 cost.GitHub - TheRealSeanDonahoe/occam: Occam — Algorithmic ARC-AGI-3 solver. 57.60% RHAE, 17/25 games, no LLM, $0 cost.1dLikeReplyShare1",
+        "timestamp": "",
+        "timestamp_raw": ""
+      },
+      {
+        "author": "https://zenodo.org/records/19448189",
+        "text": "Sean DonahoeTechnical Paper on CERN's Publishing Site:https://zenodo.org/records/19448189ZENODO.ORGOccam's Solver: An Algorithmic Baseline for ARC-AGI-3 Without Learned ModelsOccam's Solver: An Algorithmic Baseline for ARC-AGI-3 Without Learned Models1dLikeReplyShare1",
+        "timestamp": "",
+        "timestamp_raw": ""
+      },
+      {
+        "author": "https://youtu.be/e-Dt9zR1kPk",
+        "text": "Sean DonahoeYouTube Demo: https://youtu.be/e-Dt9zR1kPkYOUTUBE.COMOccam's Solver — 57.60% RHAE on ARC-AGI-3 (Full Benchmark Run, No LLM)Occam's Solver — 57.60% RHAE on ARC-AGI-3 (Full Benchmark Run, No LLM)1dLikeReplyShare1",
+        "timestamp": "",
+        "timestamp_raw": ""
+      }
+    ]
+  },
+  {
+    "id": "1628764058450906",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628764058450906/",
+    "author": "James Van Ek",
+    "text": "Interesting use case.… See more",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/669713224_1392148356280566_5346104176540249070_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-1.xx.fbcdn.net/v/t51.82787-15/669095441_18103600022302963_1135316425744335921_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/667838430_4347415372188663_7364354729696561164_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/669713224_1392148356280566_53]",
+      "[download failed: https://scontent-sin6-1.xx.fbcdn.net/v/t51.82787-15/669095441_18103600022302963_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1627887368538575",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1627887368538575/",
+    "author": "Quan Vu",
+    "text": "How do you do 10DLC registration/compliance? I'm guessing you dont. Be careful of $500 per text fines.",
+    "timestamp": "3d",
+    "timestamp_raw": "3d",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/668719643_1474010847408192_4705671761655640163_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t15.5256-10/668721284_1421730043088439_7600224732305954844_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-1.xx.fbcdn.net/v/t15.5256-10/660755177_1713890726655068_7504817191778495837_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/668719643_1474010847408192_47]",
+      "[download failed: https://scontent-sin11-1.xx.fbcdn.net/v/t15.5256-10/668721284_1421730043088439_7]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1629289848398327",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1629289848398327/",
+    "author": "Tan Meng Lock",
+    "text": "Author\nTested G4 : hopeless",
+    "timestamp": "1d",
+    "timestamp_raw": "1d",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666602753_26301080312919565_4987790076775954261_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/667390153_122303392340024042_938523395837203055_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/666019715_1483626173773889_1849286640996653401_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t39.30808-6/668536881_1914231926132438_3407474207619578624_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/662670309_1504294047734262_3481756536002662193_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666602753_26301080312919565_4]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/667390153_122303392340024042_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1627558911904754",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1627558911904754/",
+    "author": "Pushcam Solution",
+    "text": "Author\nWe very much appreciate this post! Thank you!",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666602753_26301080312919565_4987790076775954261_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/666861320_1746125606556343_6623353172074231234_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/666694283_1306165904798764_5773129298873186610_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/669045640_955028993917705_4176706622551090323_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666602753_26301080312919565_4]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1629020958425216",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1629020958425216/",
+    "author": "Ahmed Selmi",
+    "text": "The others principles?",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/666861320_1746125606556343_6623353172074231234_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/668140713_2960251750846492_1837501706256835468_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/666694283_1306165904798764_5773129298873186610_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/669045640_955028993917705_4176706622551090323_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668226051_1293340809645399_7171843550619524418_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/666861320_1746125606556343_66]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1628541431806502",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628541431806502/",
+    "author": "Triệu Khánh",
+    "text": "Author\nAdmin\nAll-star contributor\npaper: https://arxiv.org/pdf/2603.28052",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-3.xx.fbcdn.net/v/t39.30808-6/667730974_1470285284469714_714877856844936949_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t39.30808-6/669043918_122168988914867125_3974755119934299787_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-6/668704035_122166265838717928_7671616615882629149_n.jpg?stp=dst-jpg_s240x240_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/667843899_1254135180264856_8027055823452684519_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-3.xx.fbcdn.net/v/t39.30808-6/667730974_1470285284469714_71]",
+      "[download failed: https://scontent-sin11-1.xx.fbcdn.net/v/t39.30808-6/669043918_122168988914867125]"
+    ],
+    "comments": [
+      {
+        "author": "https://arxiv.org/pdf/2603.28052",
+        "text": "Triệu Khánh paper: https://arxiv.org/pdf/2603.28052",
+        "timestamp": "2d",
+        "timestamp_raw": "2d"
+      },
+      {
+        "author": "https://centralintelligenceproject.com",
+        "text": "Nick Marino Forget about the artificial stuff and jump straight to actual intelligence. At Central Intelligence Project we developed Organic Atomic Node Intelligence (OANI)™. Our harness, and the whole system, are operational. OANI is designed to identify key nodes, preserve relationships, separate unrelated systems unless evidence supports overlap, and assemble complex pictures across domains without losing continuity. Rather than operating like a generic Al assistant, OANI functions as an intelligence architecture that supports structured analysis, investigative expansion, memory preservation, briefing, dossier development, and decision support.",
+        "timestamp": "2d",
+        "timestamp_raw": "2d"
+      },
+      {
+        "author": "https://arxiv.org/pdf/2603.28052",
+        "text": "Triệu Khánhpaper: https://arxiv.org/pdf/2603.280522dLikeReplyShare2",
+        "timestamp": "",
+        "timestamp_raw": ""
+      },
+      {
+        "author": "https://centralintelligenceproject.com",
+        "text": "Nick MarinoForget about the artificial stuff and jump straight to actual intelligence.At Central Intelligence Project we developed Organic Atomic Node Intelligence (OANI)™. Our harness, and the whole system, are operational.OANI is designed to identify key nodes, preserve relationships, separate unrelated systems unless evidence supports overlap, and assemble complex pictures across domains without losing continuity. Rather than operating like a generic Al assistant, OANI functions as an intelligence architecture that supports structured analysis, investigative expansion, memory preservation, briefing, dossier development, and decision support.https://centralintelligenceproject.com2dLikeReplyShare",
+        "timestamp": "",
+        "timestamp_raw": ""
+      }
+    ]
+  },
+  {
+    "id": "1628836181777027",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628836181777027/",
+    "author": "Boubarack Baba",
+    "text": "Yes",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-6/668704035_122166265838717928_7671616615882629149_n.jpg?stp=dst-jpg_s240x240_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/669045640_955028993917705_4176706622551090323_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/667843899_1254135180264856_8027055823452684519_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-1.xx.fbcdn.net/v/t15.5256-10/660755177_1713890726655068_7504817191778495837_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-6/668704035_122166265838717928_]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1628209841839661",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628209841839661/",
+    "author": "MH MH",
+    "text": "Wdym? They didn't remove shit",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/667843899_1254135180264856_8027055823452684519_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/669045640_955028993917705_4176706622551090323_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/667971954_2380841289077847_8269950878178257497_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-1.xx.fbcdn.net/v/t15.5256-10/660755177_1713890726655068_7504817191778495837_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-6/667843899_1254135180264856_80]",
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1628701295123849",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628701295123849/",
+    "author": "20playtesters",
+    "text": "Author\nAdmin\nTop contributor\ngithub: Argh94/Proxy-List",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t51.82787-15/669687904_18578603794001955_2707997030344704811_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/663300635_1603211675145519_8042235483233808100_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t15.5256-10/668512955_3001785200212361_3868418004883712352_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t39.30808-6/668121307_1384971397007060_7489173557298307148_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-3.xx.fbcdn.net/v/t15.5256-10/668666881_1701957914501925_2621420368941035524_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t51.82787-15/669687904_18578603794001955_]",
+      "[download failed: https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/663300635_1603211675145519_8]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1628268571833788",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1628268571833788/",
+    "author": "modest22_man_",
+    "text": "is it safe ?? no virus??",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t51.82787-15/669687904_18578603794001955_2707997030344704811_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/668658319_2514953298938049_3330639177639273819_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/669045640_955028993917705_4176706622551090323_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666829147_1988974938354230_6021639031100461896_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t51.82787-15/669687904_18578603794001955_]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/668658319_2514953298938049_33]"
+    ],
+    "comments": []
+  },
+  {
+    "id": "1627897108537601",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1627897108537601/",
+    "author": "Roberto De Mello",
+    "text": "Too bad it doesn't work with a 6000 Pro",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/668721372_1264275369232610_3528835636889499369_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/667971954_2380841289077847_8269950878178257497_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t15.5256-10/669045640_955028993917705_4176706622551090323_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-2.xx.fbcdn.net/v/t15.5256-10/668069474_26152431551106884_8794114021397579311_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t15.5256-10/666829147_1988974938354230_6021639031100461896_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/668721372_1264275369232610_35]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t15.5256-10/667971954_2380841289077847_82]"
+    ],
+    "comments": [
+      {
+        "author": "https://newsletter.maartengrootendorst.com/.../a-visual...",
+        "text": "Thanh Hoang NEWSLETTER.MAARTENGROOTENDORST.COM A Visual Guide to Gemma 4 A Visual Guide to Gemma 4",
+        "timestamp": "3d",
+        "timestamp_raw": "3d"
+      },
+      {
+        "author": "https://newsletter.maartengrootendorst.com/.../a-visual...",
+        "text": "Thanh Hoanghttps://newsletter.maartengrootendorst.com/.../a-visual...NEWSLETTER.MAARTENGROOTENDORST.COMA Visual Guide to Gemma 4A Visual Guide to Gemma 43dLikeReplyShare1",
+        "timestamp": "",
+        "timestamp_raw": ""
+      }
+    ]
+  },
+  {
+    "id": "1627445448582767",
+    "url": "https://www.facebook.com/groups/770988810895106/posts/1627445448582767/",
+    "author": "Fernando Ayala",
+    "text": "the \"fastest\" mode wouldn't necessarily give the most accurate responses though.",
+    "timestamp": "2h",
+    "timestamp_raw": "2h",
+    "reactions": 0,
+    "comment_count_hint": 0,
+    "image_urls": [
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_5932432250906634203_n.jpg?stp=dst-jpg_s160x160_tt6",
+      "https://scontent-sin6-1.xx.fbcdn.net/v/t51.82787-15/661760072_18104098894932618_4165044004756211548_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/666008299_983253037560189_8405392941267824801_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin2-2.xx.fbcdn.net/v/t51.82787-15/657835720_18572515111030407_2706276595225805512_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t15.5256-10/667938263_35243272271953207_49724632808685862_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin6-3.xx.fbcdn.net/v/t51.82787-15/657742069_18576632506022723_2402222393086120337_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/668827098_26244223975233976_7306869199005730329_n.jpg?stp=dst-jpg_s280x280_tt6",
+      "https://scontent-sin11-1.xx.fbcdn.net/v/t15.5256-10/668478027_1744599692963342_7337442745771953921_n.jpg?stp=dst-jpg_s280x280_tt6"
+    ],
+    "video_url": "",
+    "image_content": [
+      "[download failed: https://scontent-sin2-2.xx.fbcdn.net/v/t39.30808-1/552246928_1316111093511132_59]",
+      "[download failed: https://scontent-sin6-1.xx.fbcdn.net/v/t51.82787-15/661760072_18104098894932618_]",
+      "[download failed: https://scontent-sin2-1.xx.fbcdn.net/v/t39.30808-6/666008299_983253037560189_840]"
+    ],
+    "comments": [
+      {
+        "author": "GIPHY",
+        "text": "Nyee Tun All while displayed on the cc.p overhead projector",
+        "timestamp": "3d",
+        "timestamp_raw": "3d"
+      },
+      {
+        "author": "GIPHY",
+        "text": "Nyee TunAll while displayed on the cc.p overhead projectorGIPHY3dLikeReplyShare",
+        "timestamp": "",
+        "timestamp_raw": ""
+      }
+    ]
+  }
+]

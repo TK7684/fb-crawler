@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(///wsl.localhost/Ubuntu/home/tk578/.openclaw/**)",
+      "Bash(mv fb-group-scraper:*)",
+      "Bash(aws --version)",
+      "Bash(wsl:*)",
+      "Bash(bash:*)",
+      "Read(///wsl.localhost/Ubuntu/home/tk578/**)",
+      "Read(//home/tk578/.openclaw/workspace/fb-group-scraper/**)"
+    ]
+  }
+}

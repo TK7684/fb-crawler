@@ -1,6 +1,6 @@
 #!/bin/bash
 # FB Group Crawler — cron wrapper with Discord updates
-cd /home/tk578/.openclaw/workspace/fb-group-scraper
+cd /home/tk578/.openclaw/workspace/fb-crawler
 
 LOG="scheduler.log"
 DISCORD_MSG=""

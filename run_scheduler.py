@@ -49,17 +49,18 @@ GROUP_IDS = [
     "209932990505671", "510865431414449", "2317142971864047", "4087025951521595",
     "2495142260709549", "701472708866479", "456929628904615", "719862439125164",
     "1668274093211179",
+    "1049914571763738",
 ]
 
 SUBSCRIBER_HUB = "https://www.facebook.com/earthh.evans.2025/supporters"
 
 # ── Anti-Detection Config ───────────────────────────────────────────
-MAX_SCRAPES_PER_DAY = 24           # Max groups per 24h period
-MIN_INTERVAL_MIN = 15             # Min minutes between scrapes
-MAX_INTERVAL_MIN = 90            # Max minutes between scrapes
+MAX_SCRAPES_PER_DAY = 8           # Max groups per 24h period
+MIN_INTERVAL_MIN = 30             # Min minutes between scrapes
+MAX_INTERVAL_MIN = 180            # Max minutes between scrapes
 BREAK_EVERY_N = 3                 # Take a long break every N scrapes
-BREAK_MIN_MIN = 20                # Min break duration (minutes)
-BREAK_MAX_MIN = 60               # Max break duration (minutes)
+BREAK_MIN_MIN = 60                # Min break duration (minutes)
+BREAK_MAX_MIN = 180               # Max break duration (minutes)
 SESSION_REFRESH_HOURS = 12        # Re-login interval
 SLEEP_HOURS_START = 2             # Quiet hours start (AM)
 SLEEP_HOURS_END = 5               # Quiet hours end (AM)
@@ -96,6 +97,8 @@ def init_db():
             video_url TEXT DEFAULT '',
             image_content TEXT DEFAULT '[]',
             scraped_at TEXT,
+            comment_count INTEGER DEFAULT 0,
+            last_deep_scraped TEXT,
             FOREIGN KEY (group_id) REFERENCES groups(group_id)
         );
         CREATE INDEX IF NOT EXISTS idx_posts_group ON posts(group_id);
@@ -123,10 +126,22 @@ def init_db():
             posts_new INTEGER DEFAULT 0,
             posts_total INTEGER DEFAULT 0,
             comments_new INTEGER DEFAULT 0,
+            posts_skipped INTEGER DEFAULT 0,
             status TEXT DEFAULT 'success',
             error TEXT DEFAULT ''
         );
     """)
+    # Migrate: add columns if missing (idempotent)
+    for col, default in [("comment_count", "0"), ("last_deep_scraped", "NULL")]:
+        try:
+            c.execute(f"ALTER TABLE posts ADD COLUMN {col} {'INTEGER DEFAULT ' + default if default.isdigit() else 'TEXT DEFAULT ' + default}")
+        except sqlite3.OperationalError:
+            pass  # column already exists
+    for col, default in [("posts_skipped", "0")]:
+        try:
+            c.execute(f"ALTER TABLE scrape_log ADD COLUMN {col} INTEGER DEFAULT {default}")
+        except sqlite3.OperationalError:
+            pass
     for gid in GROUP_IDS:
         c.execute("INSERT OR IGNORE INTO groups (group_id, group_url) VALUES (?, ?)",
                   (gid, f"https://www.facebook.com/groups/{gid}"))
@@ -147,41 +162,68 @@ def get_known_post_ids(group_id):
 
 
 def save_posts(group_id, posts):
+    """Save posts with deduplication. Returns (new_posts, new_comments, skipped)."""
     known = get_known_post_ids(group_id)
     new_posts = 0
     new_comments = 0
+    skipped = 0
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
+    now = datetime.now().isoformat()
+
     for post in posts:
         pid = post.get("id", "")
-        if not pid or pid in known:
+        if not pid:
             continue
+
+        comments = post.get("comments", [])
+        comment_count = len(comments)
+
+        if pid in known:
+            # Existing post: only update if new comments arrived
+            if comments:
+                for comment in comments:
+                    # Deduplicate by (post_id, author, text prefix)
+                    c.execute("""SELECT COUNT(*) FROM comments
+                                 WHERE post_id = ? AND author = ? AND substr(text, 1, 100) = substr(?, 1, 100)""",
+                              (pid, comment.get("author", ""), comment.get("text", "")))
+                    if c.fetchone()[0] == 0:
+                        new_comments += 1
+                        c.execute("INSERT INTO comments (post_id, group_id, author, text, timestamp, timestamp_raw, scraped_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                  (pid, group_id, comment.get("author", ""), comment.get("text", ""),
+                                   comment.get("timestamp", ""), comment.get("timestamp_raw", ""), now))
+                # Update comment count + deep scrape timestamp
+                c.execute("UPDATE posts SET comment_count = ?, last_deep_scraped = ? WHERE post_id = ?",
+                          (comment_count, now, pid))
+            skipped += 1
+            continue
+
+        # New post
         new_posts += 1
         c.execute("""
             INSERT OR REPLACE INTO posts
             (post_id, group_id, post_url, author, text, timestamp, reactions,
-             image_urls, video_url, image_content, scraped_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             image_urls, video_url, image_content, scraped_at, comment_count, last_deep_scraped)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (pid, group_id,
               post.get("url", f"https://www.facebook.com/groups/{group_id}/posts/{pid}"),
               post.get("author", ""), post.get("text", ""), post.get("timestamp", ""),
               post.get("reactions", 0), json.dumps(post.get("image_urls", [])),
               post.get("video_url", ""), json.dumps(post.get("image_content", [])),
-              post.get("scraped_at", "")))
-        for comment in post.get("comments", []):
+              now, comment_count, now if comments else None))
+        for comment in comments:
             new_comments += 1
             c.execute("INSERT INTO comments (post_id, group_id, author, text, timestamp, timestamp_raw, scraped_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
                       (pid, group_id, comment.get("author", ""), comment.get("text", ""),
-                       comment.get("timestamp", ""), comment.get("timestamp_raw", ""),
-                       post.get("scraped_at", "")))
-    now = datetime.now().isoformat()
+                       comment.get("timestamp", ""), comment.get("timestamp_raw", ""), now))
+
     c.execute("""UPDATE groups SET last_scraped = ?,
                 total_posts = (SELECT COUNT(*) FROM posts WHERE group_id = ?),
                 total_comments = (SELECT COUNT(*) FROM comments WHERE group_id = ?)
                 WHERE group_id = ?""", (now, group_id, group_id, group_id))
     conn.commit()
     conn.close()
-    return new_posts, new_comments
+    return new_posts, new_comments, skipped
 
 
 def log(msg):
@@ -192,14 +234,34 @@ def log(msg):
         f.write(line + "\n")
 
 
-def log_scrape(group_id, started, posts_new, posts_total, comments_new, status="success", error=""):
+def log_scrape(group_id, started, posts_new, posts_total, comments_new, status="success", error="", posts_skipped=0):
     conn = sqlite3.connect(str(DB_FILE))
     c = conn.cursor()
-    c.execute("""INSERT INTO scrape_log (group_id, started_at, finished_at, posts_new, posts_total, comments_new, status, error)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-              (group_id, started, datetime.now().isoformat(), posts_new, posts_total, comments_new, status, error))
+    c.execute("""INSERT INTO scrape_log (group_id, started_at, finished_at, posts_new, posts_total, comments_new, posts_skipped, status, error)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+              (group_id, started, datetime.now().isoformat(), posts_new, posts_total, comments_new, posts_skipped, status, error))
     conn.commit()
     conn.close()
+
+
+def cleanup_old_exports(group_id, keep=5):
+    """Keep only the most recent N export files per group."""
+    group_data_dir = DATA_DIR / group_id
+    if not group_data_dir.exists():
+        return 0
+    # Group files by triplet: .json, .md, _summary.json
+    all_files = sorted(group_data_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    json_files = [f for f in all_files if "_summary" not in f.name]
+    removed = 0
+    for old in json_files[keep:]:
+        stem = old.stem
+        for sibling in group_data_dir.glob(f"{stem}*"):
+            try:
+                sibling.unlink()
+                removed += 1
+            except:
+                pass
+    return removed
 
 
 def show_db_stats():
@@ -227,23 +289,35 @@ def show_db_stats():
 # ── Scraper Runner ──────────────────────────────────────────────────
 
 def run_scraper(group_url, group_id):
-    """Run scraper with VISIBLE browser (anti-detection priority)."""
+    """Run scraper with incremental mode — passes known IDs for early exit."""
+    import tempfile
+
     venv_python = BASE_DIR / "venv" / "bin" / "python3"
     scraper = BASE_DIR / "scraper.py"
-    limit = random.randint(40, 100)  # Random limit per scrape
+    limit = random.randint(20, 60)
 
-    log(f"  🔧 Scraping {limit} posts (randomized limit)...")
+    # Write known post IDs to temp file for incremental scraping
+    known = get_known_post_ids(group_id)
+    known_file = None
+    cmd = [str(venv_python), str(scraper),
+           "--url", group_url, "--headless",
+           "--limit", str(limit), "--export", "json"]
 
-    result = subprocess.run(
-        [str(venv_python), str(scraper),
-         "--url", group_url,
-         "--headless",
-         "--limit", str(limit), "--deep", str(min(limit, 50)),
-         "--export", "json"],
-        capture_output=True, text=True,
-        timeout=900,  # 15 min max
-        cwd=str(BASE_DIR),
-    )
+    if known:
+        known_file = tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False, dir=str(BASE_DIR))
+        json.dump(list(known), known_file)
+        known_file.close()
+        cmd.extend(["--known-ids-file", known_file.name])
+        log(f"  🔧 Scraping {limit} posts (incremental, {len(known)} known)...")
+    else:
+        log(f"  🔧 Scraping {limit} posts (first run)...")
+
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True,
+                                timeout=900, cwd=str(BASE_DIR))
+    finally:
+        if known_file:
+            Path(known_file.name).unlink(missing_ok=True)
 
     if result.returncode != 0:
         log(f"  ❌ Error: {result.stderr[-500:]}")
@@ -255,6 +329,8 @@ def run_scraper(group_url, group_id):
         return []
     json_files = sorted(group_data_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
     for jf in json_files:
+        if "_summary" in jf.name:
+            continue
         try:
             data = json.load(jf.open())
             if isinstance(data, list):
@@ -359,9 +435,13 @@ def scrape_one_group():
             log_scrape(group_id, started, 0, 0, 0, "no_posts")
             return True
 
-        new_p, new_c = save_posts(group_id, posts)
-        log(f"  ✅ {len(posts)} posts ({new_p} new), {new_c} comments")
-        log_scrape(group_id, started, new_p, len(posts), new_c)
+        new_p, new_c, skipped = save_posts(group_id, posts)
+        log(f"  ✅ {len(posts)} posts ({new_p} new, {skipped} already known), {new_c} new comments")
+        log_scrape(group_id, started, new_p, len(posts), new_c, posts_skipped=skipped)
+        # Cleanup stale export files (keep last 5 per group)
+        removed = cleanup_old_exports(group_id, keep=5)
+        if removed:
+            log(f"  🧹 Cleaned {removed} old export files")
         return True
 
     except subprocess.TimeoutExpired:

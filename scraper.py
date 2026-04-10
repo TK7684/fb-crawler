@@ -292,8 +292,9 @@ async def do_login(page):
 
 # ── Phase 1: Feed Scroll (collect post IDs + basic data) ───────────
 
-async def phase1_feed(page, group_url, limit):
-    """Fast feed scroll to collect post IDs and visible data."""
+async def phase1_feed(page, group_url, limit, known_ids=None):
+    """Fast feed scroll to collect post IDs and visible data.
+    If known_ids is provided, stops early after consecutive known posts."""
     await page.goto(group_url)
     await random_delay(3, 5)
 
@@ -303,9 +304,11 @@ async def phase1_feed(page, group_url, limit):
         print("⚠️ Page didn't load")
         return []
 
+    known_ids = known_ids or set()
     posts = {}
     seen = set()
     stale = 0
+    consecutive_known = 0
     scroll_count = 0
 
     while len(posts) < limit:
@@ -336,6 +339,15 @@ async def phase1_feed(page, group_url, limit):
                 continue
 
             seen.add(post_id)
+
+            # Early exit: if we keep hitting known posts, we've reached old content
+            if post_id in known_ids:
+                consecutive_known += 1
+                if consecutive_known >= 10:
+                    print(f"⏩ 10 consecutive known posts — stopping early ({len(posts)} new collected)")
+                    return list(posts.values())
+                continue
+            consecutive_known = 0
             new += 1
 
             # Author
@@ -588,7 +600,10 @@ async def phase2_deep(page, posts, max_deep=30, cookies=None):
 
 # ── Export ──────────────────────────────────────────────────────────
 
-def export_data(posts, group_name, group_dir):
+def export_data(posts, group_name, group_dir, skip_if_empty=True):
+    if skip_if_empty and not posts:
+        print("📁 No new posts — skipping export")
+        return
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     group_dir.mkdir(parents=True, exist_ok=True)
 
@@ -657,6 +672,7 @@ async def main():
     parser.add_argument("--url", type=str)
     parser.add_argument("--limit", type=int, default=50)
     parser.add_argument("--deep", type=int, default=30, help="Max posts to deep scrape for comments")
+    parser.add_argument("--known-ids-file", type=str, help="JSON file with known post IDs to skip")
     parser.add_argument("--export", choices=["json", "markdown", "both"], default="both")
     args = parser.parse_args()
 
@@ -672,8 +688,17 @@ async def main():
             print("❌ Provide --url or --login first")
             return
 
+        # Load known IDs for incremental scraping
+        known_ids = set()
+        if args.known_ids_file:
+            try:
+                known_ids = set(json.loads(Path(args.known_ids_file).read_text()))
+                print(f"📋 Loaded {len(known_ids)} known post IDs (incremental mode)")
+            except Exception as e:
+                print(f"⚠️ Could not load known IDs: {e}")
+
         # Phase 1: Fast feed
-        posts = await phase1_feed(page, args.url, args.limit)
+        posts = await phase1_feed(page, args.url, args.limit, known_ids=known_ids)
 
         if not posts:
             print("❌ No posts found")

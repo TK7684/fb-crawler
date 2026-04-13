@@ -4,13 +4,23 @@ import asyncio
 import json
 import random
 import re
-import sqlite3
+import sys
+import os
 from pathlib import Path
 from playwright.async_api import async_playwright
 
+for _p in [
+    os.environ.get("CRAWLER_DIR", ""),
+    os.path.expanduser("~/.openclaw/workspace/crawlers"),
+    os.path.expanduser("~/crawlers"),
+]:
+    if _p and os.path.isfile(os.path.join(_p, "crawler_db.py")):
+        sys.path.insert(0, _p)
+        break
+import crawler_db
+
 BASE_DIR = Path(__file__).parent
 SESSION_FILE = BASE_DIR / "session.json"
-DB_FILE = BASE_DIR / "fb_groups.db"
 
 STEALTH_JS = """
 Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
@@ -24,14 +34,11 @@ NOISE_NAMES = {'Notifications', 'Facebook', 'Log In', 'Sign Up', 'Page Not Found
 
 
 async def resolve_names():
-    db = sqlite3.connect(str(DB_FILE))
-    c = db.cursor()
+    crawler_db.init_db()
 
-    # Reset bad names
-    c.execute("UPDATE groups SET group_name = '' WHERE group_name IN ('Notifications', 'Facebook')")
-    db.commit()
-
-    groups = c.execute("SELECT group_id, group_url FROM groups WHERE group_name = ''").fetchall()
+    # Get all sources for facebook and filter for those with empty names
+    all_sources = crawler_db.list_sources("facebook")
+    groups = [(row[0], row[3], row[4]) for row in all_sources if not row[5]]  # (source_id, external_id, url) where name (index 5) is empty
     print(f"Groups to resolve: {len(groups)}")
 
     if not SESSION_FILE.exists():
@@ -55,7 +62,7 @@ async def resolve_names():
     resolved = 0
     failed = 0
 
-    for gid, url in groups:
+    for source_id, gid, url in groups:
         try:
             resp = await page.goto(url, timeout=20000, wait_until="domcontentloaded")
             await asyncio.sleep(random.uniform(3, 5))
@@ -64,8 +71,7 @@ async def resolve_names():
             final_url = page.url
             if "/groups/" not in final_url and "/notifications" in final_url:
                 print(f"  ⏭️ {gid}: redirected to notifications (not a member or private)")
-                c.execute("UPDATE groups SET group_name = ? WHERE group_id = ?", ("(not accessible)", gid))
-                db.commit()
+                crawler_db.set_source_name(source_id, "(not accessible)")
                 failed += 1
                 continue
 
@@ -123,8 +129,7 @@ async def resolve_names():
                             break
 
             if name and name not in NOISE_NAMES:
-                c.execute("UPDATE groups SET group_name = ? WHERE group_id = ?", (name, gid))
-                db.commit()
+                crawler_db.set_source_name(source_id, name)
                 resolved += 1
                 print(f"  ✅ {gid}: {name}")
             else:
@@ -144,11 +149,11 @@ async def resolve_names():
     print(f"\n✅ Resolved: {resolved}/{len(groups)} | Failed: {failed}")
 
     print("\n--- All Groups ---")
-    for r in c.execute("SELECT group_id, group_name, total_posts FROM groups ORDER BY total_posts DESC").fetchall():
-        n = r[1] or "(unnamed)"
-        print(f"  {r[0]}: {n} ({r[2]} posts)")
-
-    db.close()
+    all_sources = crawler_db.list_sources("facebook")
+    for row in all_sources:
+        source_id, platform, stype, ext_id, url, name, total_posts, total_threads, last_scraped = row
+        n = name or "(unnamed)"
+        print(f"  {ext_id}: {n} ({total_posts} posts)")
 
 
 asyncio.run(resolve_names())

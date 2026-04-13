@@ -20,17 +20,26 @@ Usage:
 
 import asyncio
 import json
+import os
 import random
-import sqlite3
 import subprocess
 import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
+for _p in [
+    os.environ.get("CRAWLER_DIR", ""),
+    os.path.expanduser("~/.openclaw/workspace/crawlers"),
+    os.path.expanduser("~/crawlers"),
+]:
+    if _p and os.path.isfile(os.path.join(_p, "crawler_db.py")):
+        sys.path.insert(0, _p)
+        break
+import crawler_db
+
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
-DB_FILE = BASE_DIR / "fb_groups.db"
 LOG_FILE = BASE_DIR / "scheduler.log"
 SESSION_FILE = BASE_DIR / "session.json"
 
@@ -70,160 +79,18 @@ LOW_ACTIVITY_END = 6              # Low activity hours end
 
 # ── Database ────────────────────────────────────────────────────────
 
-def init_db():
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-    c.executescript("""
-        CREATE TABLE IF NOT EXISTS groups (
-            group_id TEXT PRIMARY KEY,
-            group_url TEXT,
-            group_name TEXT DEFAULT '',
-            last_scraped TEXT,
-            total_posts INTEGER DEFAULT 0,
-            total_comments INTEGER DEFAULT 0,
-            is_subscriber_hub INTEGER DEFAULT 0,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS posts (
-            post_id TEXT PRIMARY KEY,
-            group_id TEXT NOT NULL,
-            post_url TEXT,
-            author TEXT DEFAULT '',
-            text TEXT DEFAULT '',
-            timestamp TEXT DEFAULT '',
-            reactions INTEGER DEFAULT 0,
-            image_urls TEXT DEFAULT '[]',
-            video_url TEXT DEFAULT '',
-            image_content TEXT DEFAULT '[]',
-            scraped_at TEXT,
-            comment_count INTEGER DEFAULT 0,
-            last_deep_scraped TEXT,
-            FOREIGN KEY (group_id) REFERENCES groups(group_id)
-        );
-        CREATE INDEX IF NOT EXISTS idx_posts_group ON posts(group_id);
-        CREATE INDEX IF NOT EXISTS idx_posts_date ON posts(scraped_at);
-
-        CREATE TABLE IF NOT EXISTS comments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            post_id TEXT NOT NULL,
-            group_id TEXT NOT NULL,
-            author TEXT DEFAULT '',
-            text TEXT DEFAULT '',
-            timestamp TEXT DEFAULT '',
-            timestamp_raw TEXT DEFAULT '',
-            scraped_at TEXT,
-            FOREIGN KEY (post_id) REFERENCES posts(post_id)
-        );
-        CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
-        CREATE INDEX IF NOT EXISTS idx_comments_group ON comments(group_id);
-
-        CREATE TABLE IF NOT EXISTS scrape_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            group_id TEXT,
-            started_at TEXT,
-            finished_at TEXT,
-            posts_new INTEGER DEFAULT 0,
-            posts_total INTEGER DEFAULT 0,
-            comments_new INTEGER DEFAULT 0,
-            posts_skipped INTEGER DEFAULT 0,
-            status TEXT DEFAULT 'success',
-            error TEXT DEFAULT ''
-        );
-    """)
-    # Migrate: add columns if missing (idempotent)
-    for col, default in [("comment_count", "0"), ("last_deep_scraped", "NULL")]:
-        try:
-            c.execute(f"ALTER TABLE posts ADD COLUMN {col} {'INTEGER DEFAULT ' + default if default.isdigit() else 'TEXT DEFAULT ' + default}")
-        except sqlite3.OperationalError:
-            pass  # column already exists
-    for col, default in [("posts_skipped", "0")]:
-        try:
-            c.execute(f"ALTER TABLE scrape_log ADD COLUMN {col} INTEGER DEFAULT {default}")
-        except sqlite3.OperationalError:
-            pass
+def seed_sources():
+    """Register configured FB groups as sources in the unified DB."""
     for gid in GROUP_IDS:
-        c.execute("INSERT OR IGNORE INTO groups (group_id, group_url) VALUES (?, ?)",
-                  (gid, f"https://www.facebook.com/groups/{gid}"))
-    c.execute("INSERT OR IGNORE INTO groups (group_id, group_url, group_name, is_subscriber_hub) VALUES (?, ?, ?, 1)",
-              ("subscriber_hub", SUBSCRIBER_HUB, "Subscriber Hub"))
-    conn.commit()
-    conn.close()
-    log(f"Database initialized: {DB_FILE}")
-
-
-def get_known_post_ids(group_id):
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-    c.execute("SELECT post_id FROM posts WHERE group_id = ?", (group_id,))
-    ids = {row[0] for row in c.fetchall()}
-    conn.close()
-    return ids
-
-
-def save_posts(group_id, posts):
-    """Save posts with deduplication. Returns (new_posts, new_comments, skipped)."""
-    known = get_known_post_ids(group_id)
-    new_posts = 0
-    new_comments = 0
-    skipped = 0
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-    now = datetime.now().isoformat()
-
-    for post in posts:
-        pid = post.get("id", "")
-        if not pid:
-            continue
-
-        comments = post.get("comments", [])
-        comment_count = len(comments)
-
-        if pid in known:
-            # Existing post: only update if new comments arrived
-            if comments:
-                for comment in comments:
-                    # Deduplicate by (post_id, author, text prefix)
-                    c.execute("""SELECT COUNT(*) FROM comments
-                                 WHERE post_id = ? AND author = ? AND substr(text, 1, 100) = substr(?, 1, 100)""",
-                              (pid, comment.get("author", ""), comment.get("text", "")))
-                    if c.fetchone()[0] == 0:
-                        new_comments += 1
-                        c.execute("INSERT INTO comments (post_id, group_id, author, text, timestamp, timestamp_raw, scraped_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                  (pid, group_id, comment.get("author", ""), comment.get("text", ""),
-                                   comment.get("timestamp", ""), comment.get("timestamp_raw", ""), now))
-                # Update comment count + deep scrape timestamp
-                c.execute("UPDATE posts SET comment_count = ?, last_deep_scraped = ? WHERE post_id = ?",
-                          (comment_count, now, pid))
-            skipped += 1
-            continue
-
-        # New post
-        new_posts += 1
-        c.execute("""
-            INSERT OR REPLACE INTO posts
-            (post_id, group_id, post_url, author, text, timestamp, reactions,
-             image_urls, video_url, image_content, scraped_at, comment_count, last_deep_scraped)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (pid, group_id,
-              post.get("url", f"https://www.facebook.com/groups/{group_id}/posts/{pid}"),
-              post.get("author", ""), post.get("text", ""), post.get("timestamp", ""),
-              post.get("reactions", 0), json.dumps(post.get("image_urls", [])),
-              post.get("video_url", ""), json.dumps(post.get("image_content", [])),
-              now, comment_count, now if comments else None))
-        for comment in comments:
-            new_comments += 1
-            c.execute("INSERT INTO comments (post_id, group_id, author, text, timestamp, timestamp_raw, scraped_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                      (pid, group_id, comment.get("author", ""), comment.get("text", ""),
-                       comment.get("timestamp", ""), comment.get("timestamp_raw", ""), now))
-
-    c.execute("""UPDATE groups SET last_scraped = ?,
-                total_posts = (SELECT COUNT(*) FROM posts WHERE group_id = ?),
-                total_comments = (SELECT COUNT(*) FROM comments WHERE group_id = ?)
-                WHERE group_id = ?""", (now, group_id, group_id, group_id))
-    conn.commit()
-    conn.close()
-    return new_posts, new_comments, skipped
+        crawler_db.ensure_source(
+            "facebook", "group", gid,
+            f"https://www.facebook.com/groups/{gid}", "",
+            metadata={"is_subscriber_hub": 0},
+        )
+    crawler_db.ensure_source(
+        "facebook", "hub", "subscriber_hub", SUBSCRIBER_HUB, "Subscriber Hub",
+        metadata={"is_subscriber_hub": 1},
+    )
 
 
 def log(msg):
@@ -232,16 +99,6 @@ def log(msg):
     print(line)
     with open(LOG_FILE, "a") as f:
         f.write(line + "\n")
-
-
-def log_scrape(group_id, started, posts_new, posts_total, comments_new, status="success", error="", posts_skipped=0):
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-    c.execute("""INSERT INTO scrape_log (group_id, started_at, finished_at, posts_new, posts_total, comments_new, posts_skipped, status, error)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-              (group_id, started, datetime.now().isoformat(), posts_new, posts_total, comments_new, posts_skipped, status, error))
-    conn.commit()
-    conn.close()
 
 
 def cleanup_old_exports(group_id, keep=5):
@@ -264,28 +121,6 @@ def cleanup_old_exports(group_id, keep=5):
     return removed
 
 
-def show_db_stats():
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-    print(f"\n📊 Database Stats")
-    print(f"   Groups:  {c.execute('SELECT COUNT(*) FROM groups').fetchone()[0]}")
-    print(f"   Posts:   {c.execute('SELECT COUNT(*) FROM posts').fetchone()[0]}")
-    print(f"   Comments: {c.execute('SELECT COUNT(*) FROM comments').fetchone()[0]}")
-    ok = c.execute("SELECT COUNT(*) FROM scrape_log WHERE status='success'").fetchone()[0]
-    err = c.execute("SELECT COUNT(*) FROM scrape_log WHERE status='error'").fetchone()[0]
-    print(f"   Scrapes: {ok} success, {err} errors")
-    print()
-    c.execute("SELECT group_id, total_posts, total_comments, last_scraped FROM groups ORDER BY total_posts DESC LIMIT 10")
-    print("   Top groups:")
-    for row in c.fetchall():
-        print(f"     {row[0]}: {row[1]} posts, {row[2]} comments (last: {row[3] or 'never'})")
-    c.execute("SELECT group_id FROM groups WHERE last_scraped IS NULL")
-    never = [r[0] for r in c.fetchall()]
-    if never:
-        print(f"\n   Never scraped ({len(never)}): {', '.join(never[:5])}...")
-    conn.close()
-
-
 # ── Scraper Runner ──────────────────────────────────────────────────
 
 def run_scraper(group_url, group_id):
@@ -297,7 +132,8 @@ def run_scraper(group_url, group_id):
     limit = random.randint(20, 60)
 
     # Write known post IDs to temp file for incremental scraping
-    known = get_known_post_ids(group_id)
+    sid = crawler_db.get_source_id("facebook", group_id)
+    known = crawler_db.get_known_post_ids(sid) if sid else set()
     known_file = None
     cmd = [str(venv_python), str(scraper),
            "--url", group_url, "--headless",
@@ -342,16 +178,6 @@ def run_scraper(group_url, group_id):
 
 # ── Anti-Detection Logic ────────────────────────────────────────────
 
-def get_scrapes_today():
-    """Count scrapes in the last 24 hours."""
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM scrape_log WHERE started_at > datetime('now', '-24 hours')")
-    count = c.fetchone()[0]
-    conn.close()
-    return count
-
-
 def is_quiet_hours():
     """Check if current hour is in quiet zone (reduced scraping)."""
     hour = datetime.now().hour
@@ -362,36 +188,6 @@ def is_low_activity():
     """Check if we should reduce activity."""
     hour = datetime.now().hour
     return LOW_ACTIVITY_START <= hour < LOW_ACTIVITY_END
-
-
-def pick_next_group():
-    """Pick next group — prioritize unscraped, avoid recently scraped."""
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-
-    # Get groups scraped in last 6 hours (avoid these)
-    c.execute("SELECT group_id FROM scrape_log WHERE started_at > datetime('now', '-6 hours')")
-    recent = {r[0] for r in c.fetchall()}
-
-    # Prefer: never scraped > oldest scrape
-    if recent:
-        c.execute("""
-            SELECT group_id, group_url FROM groups
-            WHERE group_id NOT IN ({})
-            ORDER BY COALESCE(last_scraped, '1970-01-01') ASC
-            LIMIT 5
-        """.format(','.join(['?'] * len(recent))), list(recent))
-    else:
-        c.execute("""
-            SELECT group_id, group_url FROM groups
-            ORDER BY COALESCE(last_scraped, '1970-01-01') ASC
-            LIMIT 5
-        """)
-    candidates = c.fetchall()
-
-    if not candidates:
-        return None, None
-    return random.choice(candidates)
 
 
 def should_take_break(scrapes_in_session):
@@ -410,20 +206,19 @@ def get_interval():
 
 def scrape_one_group():
     """Scrape one group with full anti-detection."""
-    # Daily limit check
-    if get_scrapes_today() >= MAX_SCRAPES_PER_DAY:
+    if crawler_db.get_scrapes_today("facebook") >= MAX_SCRAPES_PER_DAY:
         log(f"⏸️ Daily limit reached ({MAX_SCRAPES_PER_DAY}/day). Waiting...")
         return False
 
-    # Quiet hours check
     if is_quiet_hours():
         log(f"😴 Quiet hours ({SLEEP_HOURS_START}-{SLEEP_HOURS_END} AM). Skipping.")
         return False
 
-    group_id, group_url = pick_next_group()
-    if not group_id:
+    picked = crawler_db.pick_next_source("facebook", host=os.environ.get("CRAWLER_HOST"))
+    if not picked:
         log("⚠️ No groups available (all recently scraped)")
         return False
+    source_id, group_url, group_id, _name = picked
 
     started = datetime.now().isoformat()
     log(f"📡 [{group_id}] Starting scrape...")
@@ -431,26 +226,24 @@ def scrape_one_group():
     try:
         posts = run_scraper(group_url, group_id)
         if not posts:
-            log(f"  ⚠️ No posts (no access or empty group)")
-            log_scrape(group_id, started, 0, 0, 0, "no_posts")
+            log("  ⚠️ No posts (no access or empty group)")
+            crawler_db.log_scrape(source_id, "facebook", started, 0, 0, 0, "no_posts")
             return True
-
-        new_p, new_c, skipped = save_posts(group_id, posts)
-        log(f"  ✅ {len(posts)} posts ({new_p} new, {skipped} already known), {new_c} new comments")
-        log_scrape(group_id, started, new_p, len(posts), new_c, posts_skipped=skipped)
-        # Cleanup stale export files (keep last 5 per group)
+        new_p, new_t, skipped = crawler_db.save_posts(source_id, "facebook", posts)
+        log(f"  ✅ {len(posts)} posts ({new_p} new, {skipped} already known), {new_t} new comments")
+        crawler_db.log_scrape(source_id, "facebook", started, new_p, len(posts), new_t,
+                              posts_skipped=skipped)
         removed = cleanup_old_exports(group_id, keep=5)
         if removed:
             log(f"  🧹 Cleaned {removed} old export files")
         return True
-
     except subprocess.TimeoutExpired:
-        log(f"  ⏰ Timeout (15 min)")
-        log_scrape(group_id, started, 0, 0, 0, "error", "Timeout")
+        log("  ⏰ Timeout (15 min)")
+        crawler_db.log_scrape(source_id, "facebook", started, 0, 0, 0, "error", "Timeout")
         return True
     except Exception as e:
         log(f"  ❌ {e}")
-        log_scrape(group_id, started, 0, 0, 0, "error", str(e)[:500])
+        crawler_db.log_scrape(source_id, "facebook", started, 0, 0, 0, "error", str(e)[:500])
         return True
 
 
@@ -485,25 +278,17 @@ def run_daemon():
 
 def scrape_all_groups():
     """Scrape all groups once with delays."""
-    conn = sqlite3.connect(str(DB_FILE))
-    c = conn.cursor()
-    c.execute("SELECT group_id, group_url FROM groups ORDER BY RANDOM()")
-    groups = c.fetchall()
-    conn.close()
+    groups = crawler_db.list_sources("facebook")  # (id, platform, stype, ext, url, name, ...)
+    random.shuffle(groups)
 
     log(f"🔄 Scraping all {len(groups)} groups (with delays)...")
 
-    for i, (gid, url) in enumerate(groups):
+    for i, row in enumerate(groups):
         log(f"\n[{i+1}/{len(groups)}]")
-
-        # Skip if already scraped today
-        if get_scrapes_today() >= MAX_SCRAPES_PER_DAY:
-            log(f"  ⏸️ Daily limit reached. Stopping.")
+        if crawler_db.get_scrapes_today("facebook") >= MAX_SCRAPES_PER_DAY:
+            log("  ⏸️ Daily limit reached. Stopping.")
             break
-
         scrape_one_group()
-
-        # Delay between groups (5-20 min)
         if i < len(groups) - 1:
             delay = random.randint(5, 20) * 60
             log(f"  ⏳ Waiting {delay // 60} min...")
@@ -521,10 +306,11 @@ def main():
     parser.add_argument("--init", action="store_true")
     args = parser.parse_args()
 
-    init_db()
+    crawler_db.init_db()
+    seed_sources()
 
     if args.db_stats:
-        show_db_stats()
+        crawler_db.show_db_stats("facebook")
     elif args.init:
         print("✅ DB initialized")
     elif args.all:

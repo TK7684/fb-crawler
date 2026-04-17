@@ -388,6 +388,30 @@ async def phase1_feed(page, group_url, limit, known_ids=None):
             except:
                 pass
 
+            # Try to expand truncated text with "See more" button
+            try:
+                see_more = None
+                all_buttons = await article.query_selector_all("[role='button']")
+                for btn in all_buttons:
+                    btn_text = await safe_text(btn)
+                    if btn_text and ("see more" in btn_text.lower() or "ดูเพิ่มเติม" in btn_text):
+                        see_more = btn
+                        break
+                if see_more:
+                    await see_more.click()
+                    await random_delay(0.3, 0.8)
+                    spans = await article.query_selector_all("span[dir='auto']")
+                    clean = []
+                    for span in spans:
+                        txt = await safe_text(span)
+                        if txt and not is_noise(txt) and txt != author:
+                            clean.append(txt)
+                    expanded_text = '\n'.join(clean)
+                    if expanded_text and len(expanded_text) > len(text):
+                        text = expanded_text
+            except:
+                pass
+
             # Reactions count
             reactions = 0
             try:

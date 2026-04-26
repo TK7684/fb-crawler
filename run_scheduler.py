@@ -22,6 +22,7 @@ import asyncio
 import json
 import os
 import random
+import signal
 import subprocess
 import sys
 import time
@@ -59,17 +60,24 @@ GROUP_IDS = [
     "2495142260709549", "701472708866479", "456929628904615", "719862439125164",
     "1668274093211179",
     "1049914571763738",
+    # Added 2026-04-23 (topic expansion: ComfyUI)
+    "484413594331346",
+    # Added 2026-04-26
+    "1500973233827126",
 ]
 
 SUBSCRIBER_HUB = "https://www.facebook.com/earthh.evans.2025/supporters"
 
 # ── Anti-Detection Config ───────────────────────────────────────────
-MAX_SCRAPES_PER_DAY = 8           # Max groups per 24h period
-MIN_INTERVAL_MIN = 30             # Min minutes between scrapes
-MAX_INTERVAL_MIN = 180            # Max minutes between scrapes
-BREAK_EVERY_N = 3                 # Take a long break every N scrapes
-BREAK_MIN_MIN = 60                # Min break duration (minutes)
-BREAK_MAX_MIN = 180               # Max break duration (minutes)
+# Tuned 2026-04-26: more aggressive coverage while preserving human-pattern signature
+# (random delays, quiet hours, randomized breaks). Auto-comment limits unchanged
+# — those are the dominant bot-flag vector, not scrape rate.
+MAX_SCRAPES_PER_DAY = 75          # Max groups per 24h period (was 45)
+MIN_INTERVAL_MIN = 18             # Min minutes between scrapes (was 30)
+MAX_INTERVAL_MIN = 55             # Max minutes between scrapes (was 90)
+BREAK_EVERY_N = 14                # Take a long break every N scrapes (was 10)
+BREAK_MIN_MIN = 35                # Min break duration (minutes) (was 60)
+BREAK_MAX_MIN = 100               # Max break duration (minutes) (was 180)
 SESSION_REFRESH_HOURS = 12        # Re-login interval
 SLEEP_HOURS_START = 2             # Quiet hours start (AM)
 SLEEP_HOURS_END = 5               # Quiet hours end (AM)
@@ -129,7 +137,7 @@ def run_scraper(group_url, group_id):
 
     venv_python = BASE_DIR / "venv" / "bin" / "python3"
     scraper = BASE_DIR / "scraper.py"
-    limit = random.randint(20, 60)
+    limit = random.randint(35, 80)
 
     # Write known post IDs to temp file for incremental scraping
     sid = crawler_db.get_source_id("facebook", group_id)
@@ -137,7 +145,8 @@ def run_scraper(group_url, group_id):
     known_file = None
     cmd = [str(venv_python), str(scraper),
            "--url", group_url, "--headless",
-           "--limit", str(limit), "--export", "json"]
+           "--limit", str(limit), "--export", "json",
+           "--auto-comment", "--max-auto-comments", "5"]
 
     if known:
         known_file = tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False, dir=str(BASE_DIR))
@@ -214,7 +223,16 @@ def scrape_one_group():
         log(f"😴 Quiet hours ({SLEEP_HOURS_START}-{SLEEP_HOURS_END} AM). Skipping.")
         return False
 
-    picked = crawler_db.pick_next_source("facebook", host=os.environ.get("CRAWLER_HOST"))
+    # Adaptive picker (TrendRadar/NewsNow pattern, 2026-04-21): per-source cooldown
+    # multiplied by health — dry/errored sources drift back, healthy stay eligible.
+    try:
+        import adaptive_cooldown  # /home/tk578/crawlers/ on sys.path via import above
+        picked = adaptive_cooldown.pick_next_source_adaptive(
+            "facebook", host=os.environ.get("CRAWLER_HOST")
+        )
+    except Exception as _e:
+        log(f"  ⚠️ Adaptive picker failed ({_e}); falling back to base picker")
+        picked = crawler_db.pick_next_source("facebook", host=os.environ.get("CRAWLER_HOST"))
     if not picked:
         log("⚠️ No groups available (all recently scraped)")
         return False
@@ -256,24 +274,38 @@ def run_daemon():
     log(f"   Quiet hours: {SLEEP_HOURS_START}-{SLEEP_HOURS_END} AM")
     log(f"   Headless: NO (real browser for anti-detection)")
 
+    def signal_handler(signum, frame):
+        """Handle SIGTERM and KeyboardInterrupt gracefully."""
+        sig_name = signal.Signals(signum).name if signum else "KeyboardInterrupt"
+        log(f"🛑 {sig_name} received — clean shutdown")
+        sys.exit(0)
+
+    # Register signal handlers for graceful shutdown
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
+
     session_count = 0
 
-    while True:
-        scraped = scrape_one_group()
-        if scraped:
-            session_count += 1
+    try:
+        while True:
+            scraped = scrape_one_group()
+            if scraped:
+                session_count += 1
 
-            # Long break every N scrapes
-            if should_take_break(session_count):
-                break_min = random.randint(BREAK_MIN_MIN, BREAK_MAX_MIN)
-                log(f"  🛑 Taking long break ({break_min} min) after {session_count} scrapes")
-                time.sleep(break_min * 60)
+                # Long break every N scrapes
+                if should_take_break(session_count):
+                    break_min = random.randint(BREAK_MIN_MIN, BREAK_MAX_MIN)
+                    log(f"  🛑 Taking long break ({break_min} min) after {session_count} scrapes")
+                    time.sleep(break_min * 60)
 
-        # Random interval before next scrape
-        interval = get_interval()
-        mins = interval // 60
-        log(f"  ⏳ Next scrape in {mins} min (interval randomized)")
-        time.sleep(interval)
+            # Random interval before next scrape
+            interval = get_interval()
+            mins = interval // 60
+            log(f"  ⏳ Next scrape in {mins} min (interval randomized)")
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        log("🛑 KeyboardInterrupt — clean shutdown")
+        sys.exit(0)
 
 
 def scrape_all_groups():

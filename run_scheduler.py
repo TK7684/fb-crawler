@@ -45,43 +45,107 @@ LOG_FILE = BASE_DIR / "scheduler.log"
 SESSION_FILE = BASE_DIR / "session.json"
 
 GROUP_IDS = [
+    # "529408178379433", # PET TAXI CLUB PATTAYA — PRIVATE, join requested 3/10; enable after TK approves
+    "LINEDEVTH",         # LINE Developers Group Thailand (61.9K, LINE OA/Messaging API intel, 1/10)
+    "1720271421537650",  # หารถ เหมารถ รับส่ง ทั่วไทย (26K, BKR partner pool)
+    "366971744331739",   # รถเหมาไปต่างจังหวัดทั่วประเทศ 24 ชม. (charter demand+fares, 27/9)
+    "2853974944637528",  # ขนส่งสัตว์เลี้ยงสวยงามทั่วประเทศ (pet transport demand+fares, 27/9)
+    "1040877324815287",  # เหมารถไปต่างจังหวัด (TK joined list, charter fares, 27/9)
+    "414698031216363",   # รถรับส่ง หมาแมว และสัตว์เลี้ยง (pet transport demand, 27/9)
+    "1253178929272755",  # หารถไปพัทยา/หัวหิน ต่างจังหวัด By Carrent (charter fares, 27/9)
+    "330989769730010",   # กลุ่มหารถเช่าขับ Grab,Bolt,Taxi Meter (metered fare intel, 27/9)
+    "392806644244430",   # Pets Giveaway Adopt Bangkok (pet transport demand in comments, 27/9)
+    "882539605113201",   # Pets in Thailand lost/found/adoption (pet transport demand, 27/9)
+    "2845817799007670",  # Thailand Expat Pet Owners Forum (pet transport demand, 27/9)
     "1121944334567453", "654748364354107", "1745892855948687", "933674975855737",
-    "1774502687274720", "2553120341751600", "1001556964304386", "3894208190715125",
-    "1577315533418837", "1244346110734837", "3229251420636884", "839534162744930",
-    "7170559969654432", "652178389264909", "770988810895106", "1576312052950752",
-    "728630109211473", "435434921238337", "3255595701139785", "1364459958209699",
-    "267249817311678", "397412894378108", "649245810623828", "3682389062018307",
+    "1774502687274720", "1001556964304386", "3894208190715125",
+    "3229251420636884", "839534162744930",
+    "7170559969654432", "770988810895106", "1576312052950752",
+    "435434921238337", "3255595701139785", "1364459958209699",
+    "267249817311678", "649245810623828",
     "778495273564899", "1712447172677146", "456882118879168", "490903803201153",
-    "278105266564882", "1244175850623484", "2254183738386576", "882439515535971",
-    "1238818407825761", "1342996746678532", "163583739075033", "109767362376724",
-    "325743041336807", "276059605530869", "201997038548771", "181175949849139",
+    "278105266564882", "1244175850623484", "882439515535971",
+    "1238818407825761", "1342996746678532", "163583739075033",
+    "276059605530869", "201997038548771", "181175949849139",
     "1884013731857192", "414485096343458", "2971164986495013", "487631723059303",
     "209932990505671", "510865431414449", "2317142971864047", "4087025951521595",
-    "2495142260709549", "701472708866479", "456929628904615", "719862439125164",
-    "1668274093211179",
+    "2495142260709549", "701472708866479", "456929628904615",
     "1049914571763738",
     # Added 2026-04-23 (topic expansion: ComfyUI)
     "484413594331346",
     # Added 2026-04-26
     "1500973233827126",
+    # Added 2026-06-04 (user priority group)
+    "1461988771737551",
+    # Restored 2026-06-26: were pruned but accessible (low-activity, not dead)
+    "2553120341751600",  # OpenCraft (12 posts, 6/6 success)
+    "652178389264909",   # Home Assistant Ideas (40 posts, 5/6 success)
+    "728630109211473",   # Solar 2 (5 posts, 5/6 success)
+    "397412894378108",   # Aqara (12 posts, 6/6 success)
+    "109767362376724",   # SAR Dogs (3 posts, 6/6 success)
+    "325743041336807",   # SAR Foundation (7 posts, 6/6 success)
+    "719862439125164",   # ad tech (24 posts, 5/6 success)
+    "1668274093211179",  # ad tech 2 (60 posts, 6/6 success)
+    "2254183738386576",  # Vibe Coding (6 posts, intermittent)
+    "3682389062018307",  # pain group (2 posts, intermittent)
+    "1577315533418837",  # OpenClaw (2 posts, intermittent)
+    # Truly dead (not restored): 1244346110734837 (inaccessible)
+    # ComfyUI/AI-media additions 2026-09-04 (joined-groups discovery)
+    "1006512541072075",  # ComfyUI Thailand Community
+    "1394143228095187",  # Stable Diffusion Korea (numeric ID; slug URL scrapes 0)
+
+    "bkexpats.kc",  # BANGKOK EXPATS (BKR ads/expat reach, joined 4/10)
+    "bangkokexpats",  # Bangkok Expats (BKR ads/expat reach, joined 4/10)
+    "395501457186828",  # Bangkok Expat Families (BKR ads/expat reach, joined 4/10)
+    "1089966954847972",  # Expats Living in Thailand (BKR ads/expat reach, joined 4/10)
+    "travelthailandgroup",  # Thailand Travel Advice 🇹🇭 (BKR ads/expat reach, joined 4/10)
+    "309599330111493",  # 🇹🇭 Thailand Travel Advice Group 🇹🇭 (BKR ads/expat reach, joined 4/10)
+    "298606387906884",  # Thailand Travel Tips & Tricks (BKR ads/expat reach, joined 4/10)
+    "digitalnomadsinthailand",  # Digital Nomads Thailand (BKR ads/expat reach, joined 4/10)
+    "1497047133843898",  # Bangkok Digital Nomads (BKR ads/expat reach, joined 4/10)
+    "googleadscommunity",  # Google Ads Community -AdWords Is Now Goo (BKR ads/expat reach, joined 4/10)
+    "650236336729445",  # Meta Ads (Facebook, Instagram, WhatsApp) (BKR ads/expat reach, joined 4/10)
+    "google.ads.facebook.ads.expe",  # Google Ads & Facebook Ads Experts Commun (BKR ads/expat reach, joined 4/10)
+    "1163040338863052",  # Facebook Ads & Google Ads Services Exper (BKR ads/expat reach, joined 4/10)
+    "195811799377722",  # Advertising Community Thailand (BKR ads/expat reach, joined 4/10)
+    "137757067052822",  # Ad Addict - Sharing Room (BKR ads/expat reach, joined 4/10)
+    "buyer12",  # Facebook and Google ads campaign expert (BKR ads/expat reach, joined 4/10)
+    "375942032929720",  # Digital Marketing Thailand (BKR ads/expat reach, joined 4/10)
+    "681574071631926",  # แจก Prompt Google Flow Thailand (BKR ads/expat reach, joined 4/10)
+    "contentmarketing.th",  # หางานสาย Digital Marketing & Content Cre (BKR ads/expat reach, joined 4/10)
+    "474411168020341",  # กลุ่มหางาน หาคน  Ecommerce / Digital Mar (BKR ads/expat reach, joined 4/10)
 ]
 
-SUBSCRIBER_HUB = "https://www.facebook.com/earthh.evans.2025/supporters"
+# Pages (not groups) — username-based URLs
+# Pruned 2026-06-26: removed sardoginthailand (dead page)
+PAGE_IDS = {}
+
+# Supporter tabs — /<username>/subscribe/ URLs (paid creator subscription feeds).
+# Added 2026-07-19 per user request. These use phase1_supporters_feed (separate parser).
+# Note: Facebook creator subscriptions use /subscribe/ (not /supporters/ which 404s).
+# Content visible to subscribers only — account must be a paying subscriber to see posts.
+# Value = FB username (URL segment after facebook.com/). URL is built by scheduler.
+SUPPORTER_PAGES = [
+    # "earthh.evans.2025",  # DISABLED 2026-07-20: /supporters/ 404s, /subscribe/ requires paid sub (£0.99/mo)
+]
+
+SUBSCRIBER_HUB = ""  # Pruned 2026-06-26: subscriber hub inaccessible
 
 # ── Anti-Detection Config ───────────────────────────────────────────
-# Tuned 2026-04-26: more aggressive coverage while preserving human-pattern signature
-# (random delays, quiet hours, randomized breaks). Auto-comment limits unchanged
-# — those are the dominant bot-flag vector, not scrape rate.
-MAX_SCRAPES_PER_DAY = 75          # Max groups per 24h period (was 45)
-MIN_INTERVAL_MIN = 18             # Min minutes between scrapes (was 30)
-MAX_INTERVAL_MIN = 55             # Max minutes between scrapes (was 90)
-BREAK_EVERY_N = 14                # Take a long break every N scrapes (was 10)
-BREAK_MIN_MIN = 35                # Min break duration (minutes) (was 60)
-BREAK_MAX_MIN = 100               # Max break duration (minutes) (was 180)
-SESSION_REFRESH_HOURS = 12        # Re-login interval
-SLEEP_HOURS_START = 2             # Quiet hours start (AM)
+# Tuned 2026-06-26: EXTREME — 6+ rotations/day, shorter breaks, wider hours
+# 56 groups × 5 rotations = 280 daily cap. Shorter intervals, tighter breaks.
+# Headless=NO to ensure FB renders full feed (headless was causing 1-post yields).
+# Auto-comment limits unchanged — those are the dominant bot-flag vector.
+MAX_SCRAPES_PER_DAY = 450         # Aggressive mode (27/9, TK order): 64 groups × ~7 rotations
+MIN_INTERVAL_MIN = 1              # Aggressive: 1-3 min between scrapes (was 3-8)
+MAX_INTERVAL_MIN = 3
+BREAK_EVERY_N = 40                # Long break less often
+BREAK_MIN_MIN = 5                 # Shorter breaks (was 10-25 min)
+BREAK_MAX_MIN = 10
+SESSION_REFRESH_HOURS = 6         # Re-login interval
+SLEEP_HOURS_START = 3             # Quiet hours start (AM)
 SLEEP_HOURS_END = 5               # Quiet hours end (AM)
-LOW_ACTIVITY_START = 0            # Low activity hours start
+LOW_ACTIVITY_START = 2            # Low activity hours start
 LOW_ACTIVITY_END = 6              # Low activity hours end
 
 
@@ -95,10 +159,19 @@ def seed_sources():
             f"https://www.facebook.com/groups/{gid}", "",
             metadata={"is_subscriber_hub": 0},
         )
-    crawler_db.ensure_source(
-        "facebook", "hub", "subscriber_hub", SUBSCRIBER_HUB, "Subscriber Hub",
-        metadata={"is_subscriber_hub": 1},
-    )
+    for pid, purl in PAGE_IDS.items():
+        crawler_db.ensure_source(
+            "facebook", "page", pid, purl, "",
+            metadata={"is_subscriber_hub": 0},
+        )
+    # Supporter tabs — /<username>/subscribe/ (FB creator subscription feeds)
+    for username in SUPPORTER_PAGES:
+        sup_url = f"https://www.facebook.com/{username}/subscribe/"
+        crawler_db.ensure_source(
+            "facebook", "supporters", username, sup_url, f"{username} (subscribers)",
+            metadata={"is_subscriber_hub": 0, "parser": "supporters"},
+        )
+    # subscriber_hub removed 2026-06-26 (inaccessible)
 
 
 def log(msg):
@@ -132,21 +205,44 @@ def cleanup_old_exports(group_id, keep=5):
 # ── Scraper Runner ──────────────────────────────────────────────────
 
 def run_scraper(group_url, group_id):
-    """Run scraper with incremental mode — passes known IDs for early exit."""
+    """Run scraper with incremental mode — passes known IDs for early exit.
+    Auto-detects URL type: if URL ends with /supporters/, uses --type supporters."""
     import tempfile
 
+    # Ensure DISPLAY is set for headed browser (Playwright headless=False)
+    # TK 4/10: browser must NEVER pop on his desktop → default to virtual display :99 (Xvfb).
+    if not os.environ.get("DISPLAY") or os.environ.get("DISPLAY") == ":0":
+        os.environ["DISPLAY"] = ":77"
+        r = subprocess.run(["bash", "-lc", "DISPLAY=:77 xset q >/dev/null 2>&1"], capture_output=True)
+        if r.returncode != 0:
+            subprocess.Popen(["Xvfb", ":77", "-screen", "0", "1280x1024x24", "-nolisten", "tcp"],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(2)
+
     venv_python = BASE_DIR / "venv" / "bin" / "python3"
-    scraper = BASE_DIR / "scraper.py"
-    limit = random.randint(35, 80)
+    # Use Camoufox scraper if --camoufox flag is set or env var is present
+    use_camoufox = os.environ.get("FB_USE_CAMOUFOX", "0") == "1"
+    scraper = BASE_DIR / ("scraper_camoufox.py" if use_camoufox else "scraper.py")
+    limit = random.randint(80, 150)
+
+    # Detect URL type — Supporters tabs use a separate parser
+    # Matches both /supporters/ (legacy naming) and /subscribe/ (current FB URL)
+    url_path = group_url.rstrip("/").split("/")[-1].lower()
+    is_supporters = url_path in ("supporters", "subscribe", "subscription")
+    url_type = "supporters" if is_supporters else "group"
 
     # Write known post IDs to temp file for incremental scraping
     sid = crawler_db.get_source_id("facebook", group_id)
     known = crawler_db.get_known_post_ids(sid) if sid else set()
     known_file = None
+    # Base command — no auto-comment for supporters (paid feed, ToS risk)
     cmd = [str(venv_python), str(scraper),
-           "--url", group_url, "--headless",
-           "--limit", str(limit), "--export", "json",
-           "--auto-comment", "--max-auto-comments", "5"]
+           "--url", group_url,
+           "--type", url_type,
+           "--limit", str(limit), "--deep", "30", "--export", "json"]
+    # Auto-comment PERMANENTLY DISABLED 2026-09-26 (TK: "dont comment under other
+    # user's post if they dont mention"). Do not re-enable without TK's explicit order.
+    # ponytail: env bypass removed entirely — the safe default is no writes.
 
     if known:
         known_file = tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False, dir=str(BASE_DIR))
@@ -159,7 +255,7 @@ def run_scraper(group_url, group_id):
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True,
-                                timeout=900, cwd=str(BASE_DIR))
+                                timeout=2100, cwd=str(BASE_DIR))  # aggressive: 35 min — kills timeout-fails on deep=30 big groups (17 fails/6h)
     finally:
         if known_file:
             Path(known_file.name).unlink(missing_ok=True)
@@ -213,8 +309,43 @@ def get_interval():
 
 # ── Scheduler ───────────────────────────────────────────────────────
 
+def session_is_logged_out():
+    """True if session_0.json lacks the c_user/xs login pair (public-only view).
+    Found 2026-08-31: subscriber hub returned exactly 1 post for 25 days with status='success'
+    because the logged-out feed renders a single visible post. Class fix: detect + alert."""
+    try:
+        cookies = json.loads((BASE_DIR / "session_0.json").read_text())
+        names = {c.get("name") for c in cookies}
+        return not ({"c_user", "xs"} <= names)
+    except Exception:
+        return True  # ponytail: missing/unreadable session treated as logged out; upgrade = vault auto-refresh
+
+
 def scrape_one_group():
     """Scrape one group with full anti-detection."""
+    # ── Block cool-down gate (2026-09-12): respect escalating backoff after
+    # any detected checkpoint/limit. Skipping here keeps the daemon alive but idle.
+    try:
+        import blockguard
+        if blockguard.in_cool_down():
+            rem = blockguard.cool_down_remaining_min()
+            log(f"🧊 Block cool-down active — {rem} min remaining. Skipping.")
+            return False
+    except Exception:
+        pass
+
+    if session_is_logged_out():
+        # 2026-09-12 class fix: 7.5-day blind window (2,344 logged-out spins,
+        # 34 hollow 'success' scrapes Sep 5→12). Never spin blind again —
+        # attempt cookie autoheal from CDP vault before giving up.
+        import cookie_autoheal
+        if cookie_autoheal.try_heal():
+            log("🩹 Session healed from vault — proceeding with scrape")
+        else:
+            log("🔒 Session LOGGED OUT and autoheal failed — skipping "
+                "(Discord alerted, rate-limited)")
+            return False
+
     if crawler_db.get_scrapes_today("facebook") >= MAX_SCRAPES_PER_DAY:
         log(f"⏸️ Daily limit reached ({MAX_SCRAPES_PER_DAY}/day). Waiting...")
         return False
@@ -268,7 +399,7 @@ def scrape_one_group():
 def run_daemon():
     """Continuous daemon with anti-detection scheduling."""
     log("🤖 Daemon started (anti-detection mode)")
-    log(f"   Groups: {len(GROUP_IDS) + 1}")
+    log(f"   Groups: {len(GROUP_IDS) + 1} | Pages: {len(PAGE_IDS)} | Supporters: {len(SUPPORTER_PAGES)}")
     log(f"   Max scrapes/day: {MAX_SCRAPES_PER_DAY}")
     log(f"   Interval: {MIN_INTERVAL_MIN}-{MAX_INTERVAL_MIN} min")
     log(f"   Quiet hours: {SLEEP_HOURS_START}-{SLEEP_HOURS_END} AM")

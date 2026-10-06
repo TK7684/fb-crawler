@@ -57,6 +57,14 @@ GROUP_IDS = [
     "392806644244430",   # Pets Giveaway Adopt Bangkok (pet transport demand in comments, 27/9)
     "882539605113201",   # Pets in Thailand lost/found/adoption (pet transport demand, 27/9)
     "2845817799007670",  # Thailand Expat Pet Owners Forum (pet transport demand, 27/9)
+    # BDW demand-radar groups (wired 7/10, TK order "wire the demand radar to crawler") —
+    # dog-walk/pet-sit demand feeds unified.db quality/NLP pipeline; demand_radar.py keeps its own sweep
+    "722278746342756",   # หมาเจ้าปัญหา (Force-free) — walker recommendations, T0 (27/9)
+    "657711149900356",   # หางานแม่บ้าน ดูแลสุนัข — pet-care hiring, T0 (27/9)
+    "1038468616539109",  # dog walk & talk - bangkok — BDW core audience, T0 (27/9)
+    "270081311694170",   # Pet Friendly Thailand — T0+ (27/9)
+    "357008221822219",   # Dogs and Cats for Adoption TH — new-owner pet-care demand, T1 (27/9)
+    "1206669499358683",  # Expats in Bangkok Forum — EN-speaking owner demand, T1 (27/9)
     "1121944334567453", "654748364354107", "1745892855948687", "933674975855737",
     "1774502687274720", "1001556964304386", "3894208190715125",
     "3229251420636884", "839534162744930",
@@ -102,6 +110,14 @@ GROUP_IDS = [
     "309599330111493",  # 🇹🇭 Thailand Travel Advice Group 🇹🇭 (BKR ads/expat reach, joined 4/10)
     "298606387906884",  # Thailand Travel Tips & Tricks (BKR ads/expat reach, joined 4/10)
     "digitalnomadsinthailand",  # Digital Nomads Thailand (BKR ads/expat reach, joined 4/10)
+    # BKR tourist taxi-mining expansion 2026-10-06 (verified PUBLIC, from ads/fb_public_groups_taxi_mining.md)
+    "touristhelpline",  # Tourist Helpline 316.6K — viral taxi/tuk-tuk scam warnings
+    "bangkokinthailand",  # Bangkok in Thailand 77.7K — airport→city questions
+    "bangkoktraveltips",  # Bangkok & TH Travel Tips 43.9K — first-time visitors
+    "259145096730036",  # Bangkok Experience 60.5K — visitors/tourists
+    "1742719962619719",  # Travel in Thailand 40.8K — transport Q&A
+    "1084651901677407",  # Thailand Travel Bangkok 81.5K — package-tour transfer buyers
+    "thailanddigitalnomads",  # Digital Nomads Thailand 92.1K — Grab/Bolt vs taxi debates
     "1497047133843898",  # Bangkok Digital Nomads (BKR ads/expat reach, joined 4/10)
     "googleadscommunity",  # Google Ads Community -AdWords Is Now Goo (BKR ads/expat reach, joined 4/10)
     "650236336729445",  # Meta Ads (Facebook, Instagram, WhatsApp) (BKR ads/expat reach, joined 4/10)

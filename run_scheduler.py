@@ -370,6 +370,45 @@ def scrape_one_group():
         log(f"😴 Quiet hours ({SLEEP_HOURS_START}-{SLEEP_HOURS_END} AM). Skipping.")
         return False
 
+    # ── BDW radar priority (8/10): the 6 demand-radar groups feed bangkokdogwalker's
+    # lead radar and MUST be scraped daily. In a 186-source pool with ~31 scrapes/day
+    # the oldest-first queue let them starve 2+ days (7/10 gap). Once a day, before
+    # the adaptive pick, scrape whichever radar groups haven't run in 24h.
+    try:
+        _radar_ids = ["722278746342756", "657711149900356", "1038468616539109",
+                      "270081311694170", "357008221822219", "1206669499358683"]
+        _conn = crawler_db.connect()
+        _cur = _conn.cursor()
+        _q = ",".join("?" * len(_radar_ids))
+        _cur.execute(
+            f"""SELECT s.id, s.url, s.external_id, s.name FROM sources s
+                WHERE s.platform='facebook' AND s.external_id IN ({_q})
+                AND (s.last_scraped IS NULL
+                     OR s.last_scraped < datetime('now', '-24 hours'))
+                ORDER BY COALESCE(s.last_scraped, '1970-01-01') ASC LIMIT 1""",
+            _radar_ids)
+        _row = _cur.fetchone()
+        _conn.close()
+        if _row:
+            _sid, _gurl, _gid, _gname = _row
+            _started = datetime.now().isoformat()
+            log(f"🐕 [radar-priority] [{_gid}] scraping stale radar group...")
+            try:
+                _posts = run_scraper(_gurl, _gid)
+                if not _posts:
+                    crawler_db.log_scrape(_sid, "facebook", _started, 0, 0, 0, "no_posts")
+                else:
+                    _np, _nt, _sk = crawler_db.save_posts(_sid, "facebook", _posts)
+                    crawler_db.log_scrape(_sid, "facebook", _started, _np, len(_posts), _nt,
+                                          posts_skipped=_sk)
+                    log(f"  ✅ radar scrape: {len(_posts)} posts ({_np} new)")
+            except Exception as _e:
+                log(f"  ❌ radar scrape failed: {_e}")
+                crawler_db.log_scrape(_sid, "facebook", _started, 0, 0, 0, "error", str(_e)[:300])
+            # fall through to the normal pick (keeps overall pace) — radar got its turn
+    except Exception as _e:
+        log(f"  ⚠️ radar-priority pass failed ({_e}); continuing with normal pick")
+
     # Adaptive picker (TrendRadar/NewsNow pattern, 2026-04-21): per-source cooldown
     # multiplied by health — dry/errored sources drift back, healthy stay eligible.
     try:

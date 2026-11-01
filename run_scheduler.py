@@ -376,7 +376,9 @@ def scrape_one_group():
     # the adaptive pick, scrape whichever radar groups haven't run in 24h.
     try:
         _radar_ids = ["722278746342756", "657711149900356", "1038468616539109",
-                      "270081311694170", "357008221822219", "1206669499358683"]
+                      "270081311694170", "357008221822219", "1206669499358683",
+                      "882539605113201", "2845817799007670",  # +2 originals (12/10): daily-priority all 8 radar groups
+                      "1461988771737551"]  # +Nat Weerawan Subscribers (1/11, TK: subscriber hub must be scraped AND learned continuously; adaptive dry-streak backoff starved it 5d straight)
         _conn = crawler_db.connect()
         _cur = _conn.cursor()
         _q = ",".join("?" * len(_radar_ids))
@@ -384,7 +386,7 @@ def scrape_one_group():
             f"""SELECT s.id, s.url, s.external_id, s.name FROM sources s
                 WHERE s.platform='facebook' AND s.external_id IN ({_q})
                 AND (s.last_scraped IS NULL
-                     OR s.last_scraped < datetime('now', '-24 hours'))
+                     OR replace(s.last_scraped,'T',' ') < datetime('now', '-17 hours'))
                 ORDER BY COALESCE(s.last_scraped, '1970-01-01') ASC LIMIT 1""",
             _radar_ids)
         _row = _cur.fetchone()
